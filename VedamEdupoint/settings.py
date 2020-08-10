@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 # BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+load_dotenv(verbose=True, dotenv_path=os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -138,12 +139,12 @@ else:
 
     AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
     AWS_DEFAULT_ACL = None
-    AWS_S3_CUSTOM_DOMAIN = 'd2o7ckaxqmx8v8.cloudfront.net'
+    AWS_S3_CUSTOM_DOMAIN = os.getenv('AWS_S3_CUSTOM_DOMAIN')
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 
     AWS_LOCATION = 'static'
 
-    DEFAULT_FILE_STORAGE = 'WeLearn.custom_storages.MediaStorage'
+    DEFAULT_FILE_STORAGE = 'VedamEdupoint.storage_backends.MediaStorage'
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 

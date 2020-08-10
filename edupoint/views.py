@@ -98,7 +98,7 @@ def register_user(request):
             mail.send()
 
             return render(request, 'success.html', {
-                'message1': f'A verification email has been sent to {user.email}',
+                'message1': f'A verification email has been sent to {user.email}.',
                 'message2': f'Please verify your account to complete registration.'
             })
 

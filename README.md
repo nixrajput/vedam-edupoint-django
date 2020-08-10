@@ -7,15 +7,15 @@
 
 <br />
 
-###Front-End 		:	HTML, CSS, JS
-###Back-End 		: 	PostgreSQL, AWS
-###Programming 	    : 	Python
-###Web Hosting 	    : 	Heroku
+<h3>Front-End 		:	HTML, CSS, JS</h3>
+<h3>Back-End 		: 	PostgreSQL, AWS</h3>
+<h3>Programming 	    : 	Python</h3>
+<h3>Web Hosting 	    : 	Heroku</h3>
 
 <br />
 
 
-####Connect with me:
+<h4>Connect with me:</h4>
 
 [<img align="center" alt="nixrajput" width="24px" src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/globe.svg" />][website]
 [<img align="center" alt="nixrajput | Facebook" width="24px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/facebook.svg" />][facebook]

@@ -17,7 +17,7 @@ SECRET_KEY = 'qq6ejd1=0btt5btvd5a9$t1$nshs-6u5mp*8ik68f7q-fe5=!y'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'https://vedam-edupoint.herokuapp.com/']
+ALLOWED_HOSTS = ['127.0.0.1', 'vedam-edupoint.herokuapp.com']
 
 
 # Application definition

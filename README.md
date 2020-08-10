@@ -7,19 +7,16 @@
 
 <br />
 
-<p align="center">
-    <h3 align="center">Front-End 		:	HTML, CSS, JS</h3>
-    <h3 align="center">Back-End 		: 	PostgreSQL, AWS</h3>
-    <h3 align="center">Programming 	    : 	Python</h3>
-    <h3 align="center">Web Hosting 	    : 	Heroku</h3>
-</p>
-
+###Front-End 		:	HTML, CSS, JS
+###Back-End 		: 	PostgreSQL, AWS
+###Programming 	    : 	Python
+###Web Hosting 	    : 	Heroku
 
 <br />
 
 
-
 ####Connect with me:
+
 [<img align="center" alt="nixrajput" width="24px" src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/globe.svg" />][website]
 [<img align="center" alt="nixrajput | Facebook" width="24px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/facebook.svg" />][facebook]
 [<img align="center" alt="nixrajput | Twitter" width="24px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/twitter.svg" />][twitter]

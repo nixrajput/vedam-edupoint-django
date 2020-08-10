@@ -88,8 +88,7 @@ def register_user(request):
                 url = 'http://127.0.0.1:8000' + reverse('confirm_email', kwargs={'user_id': user_id, 'token': token})
 
             else:
-                url = 'https://welearn-django.herokuapp.com' + reverse('confirm_email',
-                                                                       kwargs={'user_id': user_id, 'token': token})
+                url = 'https://vedam-edupoint.herokuapp.com' + reverse('confirm_email', kwargs={'user_id': user_id, 'token': token})
 
             message = get_template('register_email.html').render({'confirm_url': url})
 

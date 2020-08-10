@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Registration Confirmation</title>
+
+    <style>
+        .btn {
+            text-transform: uppercase;
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            line-height: 0;
+            padding: 27px 44px;
+        }
+
+    </style>
+
+</head>
+<body>
+<h1>Welcome to Vedam EduPoint</h1>
+<p>To complete the verification process for your <b>{{ user.get_username }}</b> Vedam EduPoint Account, click the link
+    below:</p>
+<p><a class="btn" href="{{confirm_url}}">Verify Account</a></p>
+
+<p>If clicking the link above doesn't work, please copy and paste the URL in a new browser window instead.</p>
+
+<p>
+    Sincerely, <br>
+    The Vedam EduPoint Team
+</p>
+</body>
+</html>

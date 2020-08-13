@@ -151,13 +151,12 @@
     <!-- slider Area Start-->
     <div class="slider-area ">
         <!-- Mobile Menu -->
-        <div class="single-slider slider-height2 d-flex align-items-center"
-             data-background="{% static 'img/hero/h1_hero.jpg' %}">
+        <div class="single-slider slider-height2 d-flex align-items-center">
             <div class="container">
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="hero-cap text-center">
-                            <h2>Online Test</h2>
+                            <h2>Available Tests</h2>
                         </div>
                     </div>
                 </div>
@@ -166,8 +165,33 @@
     </div>
     <!-- slider Area End-->
 
+    <section class="category-area section-padding30">
+        <div class="container-fluid">
+            <div class="row">
+
+                {% for test in test_list %}
+
+                <div class="col-xl-4 col-lg-6">
+                    <div class="single-category mb-30">
+                        <div class="category-img">
+                            <img src="{% static 'img/courses/graduation.svg' %}" alt="test_img">
+                            <div class="category-caption">
+                                <span class="collection">{{test.name}}</span>
+                                <h2>{{test.subject}}</h2>
+                                <a class="btn border-btn test-start-btn is-link" href="">start now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
     <!-- product list part start-->
-    <section class="product_list section_padding">
+    <!--<section class="product_list section_padding">
         <div class="container">
             <div class="row">
 
@@ -179,7 +203,7 @@
                             {% for qstn in qstn_obj %}
 
                             <div class="test-area-padding">
-                                <h1>{{qstn.subject}}</h1>
+                                <h1>{{qstn.paper}}</h1>
                                 <div class="d-flex justify-content-between">
                                     <label>Full Marks : 100</label>
                                     <label>Time : 10 min</label>
@@ -265,7 +289,7 @@
             </div>
 
         </div>
-    </section>
+    </section>-->
     <!-- product list part end-->
 
 </main>

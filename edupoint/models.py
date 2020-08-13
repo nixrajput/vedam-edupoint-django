@@ -5,6 +5,9 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.template.defaultfilters import slugify
 
 
 class CustomUser(AbstractUser):
@@ -26,88 +29,107 @@ def image_path(instance, filename):
 
 
 class UserProfileImage(models.Model):
-    img = models.ImageField(upload_to=image_path, verbose_name='profile image', blank=True, null=True)
+    img = models.ImageField(upload_to=image_path, verbose_name='profile image', null=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
+        related_name='profile_picture',
         null=True,
-        blank=True,
-        related_name='profile_picture'
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class Course(models.Model):
-    title = models.CharField(verbose_name='course name', max_length=150, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.title}"
-
-
-class Class(models.Model):
-    title = models.CharField(verbose_name='class name', max_length=150, unique=True)
-    course_name = models.ForeignKey(
-        Course,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='course_name_for_class'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.title}"
+        return self.user.username
 
 
-class Subject(models.Model):
-    course_name = models.ForeignKey(
-        Course,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='course_name_for_subject'
-    )
+class TestPaper(models.Model):
+    name = models.CharField(max_length=255)
+    course = models.CharField(max_length=150)
+    category = models.CharField(max_length=150)
+    subject = models.CharField(max_length=150)
+    max_time = models.IntegerField(default=0)
+    max_marks = models.IntegerField(default=0)
+    instructions = models.TextField(blank=True)
+    slug = models.SlugField(blank=True)
+    roll_out = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-    class_name = models.ForeignKey(
-        Class,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='class_name_for_subject'
-    )
-
-    title = models.CharField(verbose_name='subject name', max_length=150)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        ordering = ['timestamp', ]
+        verbose_name_plural = "TestPaper"
 
     def __str__(self):
-        return f"{self.title} - {self.course_name} - {self.class_name}"
+        return self.name
 
 
 class Question(models.Model):
-    subject_name = models.ForeignKey(
-        Subject,
-        on_delete=models.SET_NULL,
+    paper = models.ForeignKey(
+        TestPaper,
+        on_delete=models.CASCADE,
         null=True,
-        blank=True,
-        related_name='subject_name_for_question'
     )
-
-    qstn_no = models.IntegerField(verbose_name='question number', unique=True, blank=True, null=True)
-    question_text = models.TextField(verbose_name='question text')
-    correct_ans = models.CharField
-    option1 = models.CharField(verbose_name='option 1 for answer', max_length=150)
-    option2 = models.CharField(verbose_name='option 2 for answer', max_length=150)
-    option3 = models.CharField(verbose_name='option 3 for answer', max_length=150)
-    option4 = models.CharField(verbose_name='option 4 for answer', max_length=150)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    text = models.TextField(null=True)
+    order = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.question_text}"
+        return self.text
 
 
+class Answer(models.Model):
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    option = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.option
+
+
+class TestUser(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    paper = models.ForeignKey(
+        TestPaper,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    score = models.IntegerField(default=0)
+    attempted = models.BooleanField(default=False)
+    date_attempted = models.DateTimeField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+class UsersAnswer(models.Model):
+    test_user = models.ForeignKey(
+        TestUser,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    answer = models.ForeignKey(
+        Answer,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.question.text
+
+
+@receiver(pre_save, sender=TestPaper)
+def slugify_name(sender, instance, *args, **kwargs):
+    instance.slug = slugify(instance.name)

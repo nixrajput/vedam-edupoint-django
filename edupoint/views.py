@@ -11,9 +11,9 @@ from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.conf import settings
 
-from .forms import SignupForm, ProfileImageForm
-from .models import Question, UserProfileImage, CustomUser
-from .tokens import user_tokenizer
+from .forms import *
+from .models import *
+from .tokens import *
 
 
 @login_required(login_url='login')
@@ -53,23 +53,25 @@ def profile(request):
 @login_required(login_url='login')
 def online_test(request):
     current_user = request.user
-    qstn_list = Question.objects.all()
-    paginator = Paginator(qstn_list, 1)
-    page_num = request.GET.get('page', 1)
+    # qstn_list = Question.objects.all()
+    # paginator = Paginator(qstn_list, 1)
+    # page_num = request.GET.get('page', 1)
+    #
+    # try:
+    #     qstn_obj = paginator.page(page_num)
+    # except PageNotAnInteger:
+    #     qstn_obj = paginator.page(1)
+    # except EmptyPage:
+    #     qstn_obj = paginator.page(paginator.num_pages)
 
-    try:
-        qstn_obj = paginator.page(page_num)
-    except PageNotAnInteger:
-        qstn_obj = paginator.page(1)
-    except EmptyPage:
-        qstn_obj = paginator.page(paginator.num_pages)
+    test_list = TestPaper.objects.all()
 
     try:
         profile_img = [UserProfileImage.objects.filter(user_id=current_user.userId).latest('updated_at')]
     except ObjectDoesNotExist:
         profile_img = []
 
-    return render(request, 'online-test.html', {'qstn_obj': qstn_obj, 'profileImg': profile_img})
+    return render(request, 'online-test.html', {'test_list': test_list, 'profileImg': profile_img})
 
 
 def register_user(request):

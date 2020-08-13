@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'edupoint',
     'widget_tweaks',
     'storages',
+    'nested_admin',
 ]
 
 MIDDLEWARE = [

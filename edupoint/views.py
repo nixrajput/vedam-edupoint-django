@@ -29,7 +29,7 @@ def home(request):
 
 
 @login_required(login_url='login')
-def profile(request):
+def profile(request, username):
     current_user = request.user
     try:
         profile_img = [UserProfileImage.objects.filter(user_id=current_user.userId).latest('updated_at')]
@@ -90,7 +90,8 @@ def register_user(request):
                 url = 'http://127.0.0.1:8000' + reverse('confirm_email', kwargs={'user_id': user_id, 'token': token})
 
             else:
-                url = 'https://vedam-edupoint.herokuapp.com' + reverse('confirm_email', kwargs={'user_id': user_id, 'token': token})
+                url = 'https://vedam-edupoint.herokuapp.com' + reverse('confirm_email',
+                                                                       kwargs={'user_id': user_id, 'token': token})
 
             message = get_template('register_email.html').render({'confirm_url': url})
 
@@ -160,3 +161,46 @@ def confirm_password_reset(request):
 
 def success_confirmation(request):
     return render(request, 'success.html')
+
+
+def about_us(request):
+    try:
+        user_list = TeamMember.objects.all()
+    except ObjectDoesNotExist:
+        user_list = []
+
+    context = {
+        'user_list': user_list,
+    }
+
+    return render(request, 'about.html', context)
+
+
+def contact_us(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            name = form.cleaned_data['full_name']
+            message = form.cleaned_data['comment']
+            sender = form.cleaned_data['email']
+            subject = form.cleaned_data['subject']
+
+            message = get_template('contact_email.html').render({'message': message, 'sender': sender, 'name': name})
+
+            mail = EmailMessage(subject=subject, body=message, from_email=settings.DEFAULT_FROM_EMAIL,
+                                to=[settings.EMAIL_HOST_USER])
+
+            mail.content_subtype = 'html'
+            mail.send()
+
+            return render(request, 'success.html', {
+                'message1': f'Your message has been sent successfully.',
+                'message2': f'Thank you for your valuable message.'
+            })
+
+    else:
+        form = ContactForm()
+    return render(request, 'contact.html', {'form': form})

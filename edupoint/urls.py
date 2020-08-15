@@ -11,9 +11,9 @@ urlpatterns = [
     path('register/', views.register_user, name='register'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('online-test/', views.online_test, name='online-test'),
-    path('profile/', views.profile, name='profile'),
+    path('profile/<str:username>/', views.profile, name='profile'),
     path('confirm-email/<str:user_id>/<str:token>/', views.confirm_registration, name='confirm_email'),
-    path('confirm_password_reset/', views.confirm_password_reset, name='confirm-password-reset'),
+    path('confirm-password-reset/', views.confirm_password_reset, name='confirm-password-reset'),
     path('success/', views.success_confirmation, name='success'),
     path(
         'reset-password/',
@@ -36,4 +36,7 @@ urlpatterns = [
             success_url=settings.LOGIN_REDIRECT_URL),
         name='password_reset_confirm'
     ),
+
+    path('about-us/', views.about_us, name='about'),
+    path('contact-us/', views.contact_us, name='contact'),
 ]

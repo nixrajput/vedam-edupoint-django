@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+import django.contrib.auth.validators
 from django.template.defaultfilters import slugify
 
 
@@ -133,3 +134,43 @@ class UsersAnswer(models.Model):
 @receiver(pre_save, sender=TestPaper)
 def slugify_name(sender, instance, *args, **kwargs):
     instance.slug = slugify(instance.name)
+
+
+class ContactUs(models.Model):
+    full_name = models.CharField(max_length=150, null=True, verbose_name='full name')
+    subject = models.CharField(max_length=150, null=True, verbose_name='subject for email')
+    email = models.EmailField(max_length=254, null=True, verbose_name='email address')
+    comment = models.TextField(null=True, verbose_name='your comment')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.subject
+
+
+def admin_image_path(instance, filename):
+    base_filename, file_extension = os.path.splitext(filename)
+    today = datetime.datetime.now()
+    y = today.strftime('%Y')
+    m = today.strftime('%m')
+    d = today.strftime('%d')
+
+    rand_str = uuid.uuid4()
+    return 'admin_img/{year}/{month}/{date}/{user_id}/{random_string}{ext}' \
+        .format(year=y, month=m, date=d, user_id=instance.userId, random_string=rand_str, ext=file_extension)
+
+
+class TeamMember(models.Model):
+    userId = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    first_name = models.CharField(max_length=150, null=True, verbose_name='first name')
+    last_name = models.CharField(max_length=150, null=True, verbose_name='last name')
+    email = models.EmailField(null=True, unique=True, verbose_name='email address')
+    username = models.CharField(max_length=150, null=True, unique=True,
+                                validators=[django.contrib.auth.validators.UnicodeUsernameValidator()]
+                                )
+    dob = models.DateField(null=True, verbose_name='date of birth')
+    img = models.ImageField(upload_to=admin_image_path, verbose_name='profile image', null=True)
+    about = models.TextField(null=True, verbose_name='about member')
+    designation = models.CharField(max_length=150, null=True, verbose_name='member designation')
+
+    def __str__(self):
+        return self.username

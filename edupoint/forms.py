@@ -21,3 +21,9 @@ class ProfileImageForm(forms.ModelForm):
     class Meta:
         model = UserProfileImage
         fields = ['img']
+
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = ContactUs
+        fields = ['full_name', 'email', 'subject',  'comment']

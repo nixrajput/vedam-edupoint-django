@@ -78,14 +78,8 @@
                                                 <li><a href="#"> eBooks</a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="blog.html">Blog</a>
-                                            <ul class="submenu">
-                                                <li><a href="blog.html">Blog</a></li>
-                                                <li><a href="single-blog.html">Blog Details</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="about.html">About</a></li>
-                                        <li><a href="contact.html">Contact</a></li>
+                                        <li><a href="{% url 'about' %}">About</a></li>
+                                        <li><a href="{% url 'contact' %}">Contact</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -126,7 +120,7 @@
                                     {% endfor %}
 
                                     <ul class="user-submenu">
-                                        <li><a href="{% url 'profile' %}">My Profile</a></li>
+                                        <li><a href="{% url 'profile' username=user.username %}">My Profile</a></li>
                                         <li><a href="#">Settings</a></li>
                                         <hr>
                                         <li><a href="#">My Courses</a></li>
@@ -255,24 +249,7 @@
     <div class="footer-area footer-padding">
         <div class="container">
             <div class="row d-flex justify-content-between">
-                <div class="col-xl-3 col-lg-3 col-md-5 col-sm-6">
-                    <div class="single-footer-caption mb-50">
-                        <div class="single-footer-caption mb-30">
-                            <!-- logo -->
-                            <div class="footer-logo">
-                                <a href="{% url 'home' %}"><img alt="" src="{% static 'img/logo/logo.png' %}"></a>
-                            </div>
-                            <div class="footer-tittle">
-                                <div class="footer-pera">
-                                    <p>In the today's world of online education, we are just trying to give our
-                                        contribution
-                                        towards world to make our future great!</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-5">
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-7">
                     <div class="single-footer-caption mb-50">
                         <div class="footer-tittle">
                             <h4>Quick Links</h4>
@@ -285,7 +262,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-7">
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-7">
                     <div class="single-footer-caption mb-50">
                         <div class="footer-tittle">
                             <h4>Products</h4>
@@ -298,7 +275,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-7">
                     <div class="single-footer-caption mb-50">
                         <div class="footer-tittle">
                             <h4>Support</h4>
@@ -316,8 +293,11 @@
             <div class="row">
                 <div class="col-xl-7 col-lg-7 col-md-7">
                     <div class="footer-copy-right">
-                        <p>&copy;<script>document.write(new Date().getFullYear());</script>
-                            <a href="{% url 'home' %}" target="_blank"> WeLearn</a> | All rights reserved.
+                        <p>&copy;
+                            <script>
+                                    document.write(new Date().getFullYear());
+                            </script>
+                            <a href="{% url 'home' %}"> WeLearn</a> | All rights reserved.
                         </p>
                     </div>
                 </div>

@@ -28,7 +28,6 @@
 </head>
 
 <body>
-{% if user.is_authenticated %}
 
 <header>
     <!-- Header Start -->
@@ -71,12 +70,15 @@
                                 </nav>
                             </div>
                         </div>
+
+                        {% if user.is_authenticated %}
+
                         <div class="col-xl-5 col-lg-3 col-md-3 col-sm-3 fix-card">
                             <ul class="header-right f-right d-none d-lg-block d-flex justify-content-between">
 
                                 <li class="d-none d-xl-block">
                                     <div class="favorit-items" id="favorite-count">
-                                        <a href=""><i class="far fa-heart"></i></a>
+                                        <a href="cart.html"><i class="far fa-heart"></i></a>
 
                                     </div>
                                 </li>
@@ -84,13 +86,12 @@
                                 <li>
                                     <div class="d-none d-xl-block">
                                         <div class="shopping-card">
-                                            <a href=""><i class="fas fa-shopping-cart"></i></a>
+                                            <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
                                         </div>
                                     </div>
                                 </li>
 
                                 <li>
-
                                    {% for currentUser in profileImg %}
 
                                     <div class="user-card">
@@ -128,6 +129,9 @@
 
                             </ul>
                         </div>
+
+                        {% endif %}
+
                         <!-- Mobile Menu -->
                         <div class="col-12">
                             <div class="mobile_menu d-block d-lg-none"></div>
@@ -150,7 +154,7 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="hero-cap text-center">
-                            <h2>Available Tests</h2>
+                            <h2>About Us</h2>
                         </div>
                     </div>
                 </div>
@@ -159,132 +163,38 @@
     </div>
     <!-- slider Area End-->
 
-    <section class="category-area section-padding30">
-        <div class="container-fluid">
-            <div class="row">
 
-                {% for test in test_list %}
+    <div class="section">
+      <div class="container">
 
-                <div class="col-xl-4 col-lg-6">
-                    <div class="single-category mb-30">
-                        <div class="category-img">
-                            <img src="{% static 'img/courses/graduation.svg' %}" alt="test_img">
-                            <div class="category-caption">
-                                <span class="collection">{{test.name}}</span>
-                                <h2>{{test.subject}}</h2>
-                                <a class="btn border-btn test-start-btn is-link" href="">start now</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {% endfor %}
-
-            </div>
+        <div class="row mb-5 justify-content-center">
+          <div class="col-lg-7 mb-5 text-center"  data-aos="fade-up" data-aos-delay="">
+            <h2 class="section-title">Our Team</h2>
+            <p class="mb-5">Meet Our team members who are working with their heart to provide you a better services
+            to fulfill your demands and needs.</p>
+          </div>
         </div>
-    </section>
 
-    <!-- product list part start-->
-    <!--<section class="product_list section_padding">
-        <div class="container">
-            <div class="row">
+        <div class="row">
 
-                <div class="col-md-12">
+            {% for user in user_list %}
 
-                    <div class="online-test-area">
-                        <form method="POST">
-
-                            {% for qstn in qstn_obj %}
-
-                            <div class="test-area-padding">
-                                <h1>{{qstn.paper}}</h1>
-                                <div class="d-flex justify-content-between">
-                                    <label>Full Marks : 100</label>
-                                    <label>Time : 10 min</label>
-                                </div>
-
-                            </div>
-
-                            <hr>
-
-                            <div class="test-area-padding">
-                                <p class="question">
-                                    <b>{{qstn.id}}.</b> {{qstn.question_text}}
-                                </p>
-
-                                <div class="options">
-                                    <div><input type="checkbox"> <label>{{qstn.option1}}</label></div>
-                                    <div><input type="checkbox"> <label>{{qstn.option2}}</label></div>
-                                    <div><input type="checkbox"> <label>{{qstn.option3}}</label></div>
-                                    <div><input type="checkbox"> <label>{{qstn.option4}}</label></div>
-                                </div>
-
-                            </div>
-
-                            {% endfor %}
-
-                            <div class="test-area-padding">
-
-                                <div class="nav-button-area">
-
-                                    {% if qstn_obj.has_other_pages %}
-
-                                    <ul class="pagination">
-
-                                        {% if qstn_obj.has_previous %}
-
-                                        <li><a class="pagination-btn"
-                                               href="?page={{ qstn_obj.previous_page_number }}"><i
-                                                class="far fa-arrow-alt-circle-left"></i></a></li>
-
-                                        {% else %}
-
-                                        <li class="disabled"><i class="far fa-arrow-alt-circle-left"></i></li>
-
-                                        {% endif %}
-
-                                        {% for i in qstn_obj.paginator.page_range %}
-
-                                        {% if qstn_obj.number == i %}
-
-                                        <li class="active"><span class="pagination-page">{{ i }}</span></li>
-
-                                        {% else %}
-
-                                        <li><a class="pagination-page" href="?page={{ i }}">{{ i }}</a></li>
-
-                                        {% endif %}
-
-                                        {% endfor %}
-
-                                        {% if qstn_obj.has_next %}
-
-                                        <li><a class="pagination-btn" href="?page={{ qstn_obj.next_page_number }}"><i
-                                                class="far fa-arrow-alt-circle-right"></i></a></li>
-
-                                        {% else %}
-
-                                        <li class="disabled"><i class="far fa-arrow-alt-circle-right"></i></li>
-
-                                        {% endif %}
-
-                                    </ul>
-
-                                    {% endif %}
-
-                                </div>
-
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-
+          <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="team text-center">
+              <img src="{{ user.img.url }}" class="img-fluid w-50 rounded-circle mx-auto mb-4">
+              <div class="py-2">
+                <h3 class="text-black">{{user.first_name}} {{user.last_name}}</h3>
+                <p class="position">{{user.designation}}</p>
+                <p>{{user.about}}</p>
+              </div>
             </div>
+          </div>
+
+            {% endfor %}
 
         </div>
-    </section>-->
-    <!-- product list part end-->
+      </div>
+    </div>
 
 </main>
 
@@ -364,8 +274,6 @@
     <!-- Footer End-->
 
 </footer>
-
-{% endif %}
 
 <!-- JS here -->
 

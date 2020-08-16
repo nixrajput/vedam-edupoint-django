@@ -92,11 +92,12 @@
                                 </li>
 
                                 <li>
-                                   {% for currentUser in profileImg %}
+                                    {% for currentUser in profileImg %}
 
                                     <div class="user-card">
                                         <a href="#">
-                                            <img src="{% if currentUser.img %}{{ currentUser.img.url }}{% else %}/static/img/person.png{% endif %}" alt="">
+                                            <img src="{% if currentUser.img %}{{ currentUser.img.url }}{% else %}/static/img/person.png{% endif %}"
+                                                 alt="">
                                         </a>
                                     </div>
 
@@ -146,162 +147,171 @@
 
 <main>
 
-    <!-- slider Area Start-->
-    <div class="slider-area ">
-        <!-- Mobile Menu -->
-        <div class="single-slider slider-height2 d-flex align-items-center">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="hero-cap text-center">
-                            <h2>About Us</h2>
+    <div class="section">
+        <div class="container">
+
+            <div class="row mb-5 justify-content-center">
+                <div class="col-lg-8 mb-4 text-center">
+                    <h2 class="section-title">Our Mission</h2>
+                </div>
+
+                <div class="col-lg-8">
+
+                    <p class="about-text">
+                        Vedam EduPoint is a new Ed-Tech startup by young minds of the <strong>India</strong>. We are
+                        launching online test series for IIT-JEE and NEET now. You can evaluate your preparations by
+                        taking part in our online test series for <b>FREE</b>. Later on we will be coming with courses
+                        on various topic in multiple language for different types of competitive exams and class
+                        6th-12th.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="section">
+        <div class="container">
+
+            <div class="row mb-5 justify-content-center">
+                <div class="col-lg-8 mb-4 text-center">
+                    <h2 class="section-title">Our Mission</h2>
+                </div>
+
+                <div class="col-lg-8">
+
+                    <div class="about-item-container">
+                        <div class="custom-rounded-icons">
+                            <i class="far fa-lightbulb"></i>
+                        </div>
+                        <div class="about-item">
+                            <p>To Improve Quality & Content of E-Learning.</p>
+                        </div>
+                    </div>
+
+                    <div class="about-item-container">
+                        <div class="custom-rounded-icons">
+                            <i class="far fa-lightbulb"></i>
+                        </div>
+                        <div class="about-item">
+                            <p>To Make Education Accessible, Available & Affordable to Everyone.</p>
+                        </div>
+                    </div>
+
+                    <div class="about-item-container">
+                        <div class="custom-rounded-icons">
+                            <i class="far fa-lightbulb"></i>
+                        </div>
+                        <div class="about-item">
+                            <p>To Guide Every Student to Bright Future According Their Performances.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="section">
+        <div class="container">
+
+            <div class="row mb-5 justify-content-center">
+                <div class="col-lg-8 mb-4 text-center">
+                    <h2 class="section-title">Our Vision</h2>
+                </div>
+
+                <div class="col-lg-8">
+
+                    <div class="about-item-container">
+                        <div class="custom-rounded-icons">
+                            <i class="far fa-eye"></i>
+                        </div>
+                        <div class="about-item">
+                            <p>To Provide Education to Each & Every Area of the World.</p>
+                        </div>
+                    </div>
+
+                    <div class="about-item-container">
+                        <div class="custom-rounded-icons">
+                            <i class="far fa-eye"></i>
+                        </div>
+                        <div class="about-item">
+                            <p>To Make Learning Easy Way With Fun.</p>
+                        </div>
+                    </div>
+
+                    <div class="about-item-container">
+                        <div class="custom-rounded-icons">
+                            <i class="far fa-eye"></i>
+                        </div>
+                        <div class="about-item">
+                            <p>To Partner With Talented Persons of the World.</p>
+                        </div>
+                    </div>
+
+                    <div class="about-item-container">
+                        <div class="custom-rounded-icons">
+                            <i class="far fa-eye"></i>
+                        </div>
+                        <div class="about-item">
+                            <p>To Provide Courses on Every Topics in multi-languages.</p>
+                        </div>
+                    </div>
+
+                    <div class="about-item-container">
+                        <div class="custom-rounded-icons">
+                            <i class="far fa-eye"></i>
+                        </div>
+                        <div class="about-item">
+                            <p>To Establish Our Own Coaching Institute in Future.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="section">
+        <div class="container">
+
+            <div class="row mb-5 justify-content-center">
+                <div class="col-lg-7 mb-4 text-center">
+                    <h2 class="section-title">Our Team</h2>
+                    <p class="mb-5">Meet Our team members who are working with their heart to provide you a better
+                        services
+                        to fulfill your demands and needs.</p>
+                </div>
+            </div>
+
+            <div class="row">
+
+                {% for user in user_list %}
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="team text-center">
+                        <img src="{{ user.img.url }}" class="img-fluid w-50 rounded-circle mx-auto mb-4">
+                        <div class="py-2">
+                            <h3 class="text-black">{{user.first_name}} {{user.last_name}}</h3>
+                            <p class="position">{{user.designation}}</p>
+                            <p>{{user.about}}</p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <!-- slider Area End-->
 
-
-    <div class="section">
-      <div class="container">
-
-        <div class="row mb-5 justify-content-center">
-          <div class="col-lg-8 mb-4 text-center">
-            <h2 class="section-title">Our Mission</h2>
-          </div>
-
-            <div class="col-lg-8">
-
-                <div class="about-item-container">
-                  <div class="custom-rounded-icons">
-                      <i class="far fa-lightbulb"></i>
-                  </div>
-                  <div class="about-item">
-                      <p>To Improve Quality & Content of E-Learning.</p>
-                  </div>
-              </div>
-
-                <div class="about-item-container">
-                    <div class="custom-rounded-icons">
-                      <i class="far fa-lightbulb"></i>
-                  </div>
-                  <div class="about-item">
-                      <p>To Make Education Accessible, Available & Affordable to Everyone.</p>
-                  </div>
-                </div>
-
-                <div class="about-item-container">
-                    <div class="custom-rounded-icons">
-                      <i class="far fa-lightbulb"></i>
-                  </div>
-                  <div class="about-item">
-                      <p>To Guide Every Student to Bright Future According Their Performances.</p>
-                  </div>
-                </div>
+                {% endfor %}
 
             </div>
-
         </div>
-
-      </div>
-    </div>
-
-
-    <div class="section">
-      <div class="container">
-
-        <div class="row mb-5 justify-content-center">
-          <div class="col-lg-8 mb-4 text-center">
-            <h2 class="section-title">Our Vision</h2>
-          </div>
-
-            <div class="col-lg-8">
-
-                <div class="about-item-container">
-                  <div class="custom-rounded-icons">
-                      <i class="far fa-eye"></i>
-                  </div>
-                  <div class="about-item">
-                      <p>To Provide Education to Each & Every Area of the World.</p>
-                  </div>
-              </div>
-
-                <div class="about-item-container">
-                    <div class="custom-rounded-icons">
-                      <i class="far fa-eye"></i>
-                  </div>
-                  <div class="about-item">
-                      <p>To Make Learning Easy Way With Fun.</p>
-                  </div>
-                </div>
-
-                <div class="about-item-container">
-                    <div class="custom-rounded-icons">
-                      <i class="far fa-eye"></i>
-                  </div>
-                  <div class="about-item">
-                      <p>To Partner With Talented Persons of the World.</p>
-                  </div>
-                </div>
-
-                <div class="about-item-container">
-                    <div class="custom-rounded-icons">
-                      <i class="far fa-eye"></i>
-                  </div>
-                  <div class="about-item">
-                      <p>To Provide Courses on Every Topics in multi-languages.</p>
-                  </div>
-                </div>
-
-                <div class="about-item-container">
-                    <div class="custom-rounded-icons">
-                      <i class="far fa-eye"></i>
-                  </div>
-                  <div class="about-item">
-                      <p>To Establish Our Own Coaching Institute in Future.</p>
-                  </div>
-                </div>
-
-            </div>
-
-        </div>
-
-      </div>
-    </div>
-
-
-    <div class="section">
-      <div class="container">
-
-        <div class="row mb-5 justify-content-center">
-          <div class="col-lg-7 mb-4 text-center">
-            <h2 class="section-title">Our Team</h2>
-            <p class="mb-5">Meet Our team members who are working with their heart to provide you a better services
-            to fulfill your demands and needs.</p>
-          </div>
-        </div>
-
-        <div class="row">
-
-            {% for user in user_list %}
-
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div class="team text-center">
-              <img src="{{ user.img.url }}" class="img-fluid w-50 rounded-circle mx-auto mb-4">
-              <div class="py-2">
-                <h3 class="text-black">{{user.first_name}} {{user.last_name}}</h3>
-                <p class="position">{{user.designation}}</p>
-                <p>{{user.about}}</p>
-              </div>
-            </div>
-          </div>
-
-            {% endfor %}
-
-        </div>
-      </div>
     </div>
 
 </main>
@@ -360,6 +370,7 @@
                         <p>&copy;
                             <script>
                                     document.write(new Date().getFullYear());
+
                             </script>
                             <a href="{% url 'home' %}"> WeLearn</a> | All rights reserved.
                         </p>

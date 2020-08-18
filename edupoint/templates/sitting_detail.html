@@ -1,0 +1,95 @@
+{% load static %}
+{% load i18n %}
+{% load quiz_tags %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <title>Vedam EduPoint</title>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link href="{% static 'img/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
+
+    {% include 'widgets/styles.html' %}
+
+</head>
+
+<body>
+
+{% include 'widgets/header.html' %}
+
+<main>
+
+    <section class="category-area mt-40">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <h2 class="text-center">Test Name: {{ sitting.paper.name }}</h2>
+                <h3 class="text-center">Subject: {{ sitting.paper.subject }}</h3>
+                <hr>
+                <p>User: {{ sitting.user }}</p>
+                <p>Completed: {{ sitting.end|date }}</p>
+                <p>Score: {{ sitting.get_percent_correct }}%</p>
+
+                <table class="table table-bordered table-striped text-center">
+
+                    <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>User Answer</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for question in questions %}
+
+                    <tr>
+                        <td>
+                            {{ question.text }}
+                            {% if question.figure %}
+                            <div style="max-width: 100px;"><img src="{{ question.figure.url }}"
+                                                                alt="{{ question.figure }}"/>
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>{{ question|answer_choice_to_string:question.user_answer }}</td>
+                        <td>
+                            {% if question.id in sitting.get_incorrect_questions %}
+                            <p>Incorrect</p>
+                            {% else %}
+                            <p>Correct</p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="" method="POST">
+                                    {% csrf_token %}
+                                <input type=hidden name="qid" value="{{ question.id }}">
+                                <button type="submit" class="link-btn">Toggle Answer</button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
+{% include 'widgets/footer.html' %}
+
+{% include 'widgets/scripts.html' %}
+
+</body>
+
+</html>

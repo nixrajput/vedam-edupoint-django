@@ -1,0 +1,118 @@
+{% load static %}
+{% load i18n %}
+
+<header>
+    <!-- Header Start -->
+    <div class="header-area">
+        <div class="main-header ">
+            <div class="header-bottom  header-sticky">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <!-- Logo -->
+                        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-3">
+                            <div class="logo">
+                                <a href="{% url 'home' %}"><img alt="" src="{% static 'img/logo.png' %}"></a>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-8 col-md-7 col-sm-5">
+                            <!-- Main-menu -->
+                            <div class="main-menu f-right d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li><a href="{% url 'home' %}">Home</a></li>
+                                        <li class="hot"><a href="">Latest</a>
+                                            <ul class="submenu">
+                                                <li><a href="{% url 'online-test' %}"> Online Test</a></li>
+                                                <li><a href="#"> Courses</a>
+                                                    <ul class="submenu-sub">
+                                                        <li><a href="#">Class 5th-8th</a></li>
+                                                        <li><a href="#">Class 9th-10th</a></li>
+                                                        <li><a href="#">Class 11th-12th</a></li>
+                                                        <li><a href="#">IIT-JEE</a></li>
+                                                        <li><a href="#">NEET</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li><a href="#"> Assignments</a></li>
+                                                <li><a href="#"> eBooks</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="{% url 'about' %}">About</a></li>
+                                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+
+                        {% if user.is_authenticated %}
+
+                        <div class="col-xl-5 col-lg-3 col-md-3 col-sm-3 fix-card">
+                            <ul class="header-right f-right d-none d-lg-block d-flex justify-content-between">
+
+                                <li class="d-none d-xl-block">
+                                    <div class="favorit-items" id="favorite-count">
+                                        <a href=""><i class="far fa-heart"></i></a>
+
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="d-none d-xl-block">
+                                        <div class="shopping-card">
+                                            <a href=""><i class="fas fa-shopping-cart"></i></a>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>
+
+                                    {% for currentUser in profileImg %}
+
+                                    <div class="user-card">
+                                        <a href="#">
+                                            <img src="{% if currentUser.img %}{{ currentUser.img.url }}{% else %}/static/img/person.png{% endif %}"
+                                                 alt="">
+                                        </a>
+                                    </div>
+
+                                    {% empty %}
+
+                                    <div class="user-card">
+                                        <a href="#"><img src="{% static 'img/person.png' %}" alt="img"></a>
+                                    </div>
+
+                                    {% endfor %}
+
+                                    <ul class="user-submenu">
+                                        <li><a href="{% url 'profile' username=user.username %}">My Profile</a></li>
+                                        <li><a href="#">Settings</a></li>
+                                        <hr>
+                                        <li><a href="#">My Courses</a></li>
+                                        <li><a href="#">My Wishlist</a></li>
+                                        <hr>
+                                        <li><a href="#">My Cart</a></li>
+                                        <li><a href="#">Checkout</a></li>
+                                        <hr>
+                                        <li><a href="#">Help</a></li>
+                                        <li><a href="#">User Agreements</a></li>
+                                        <li><a href="#">Privacy Policy</a></li>
+                                        <hr>
+                                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        {% endif %}
+
+                        <!-- Mobile Menu -->
+                        <div class="col-12">
+                            <div class="mobile_menu d-block d-lg-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+</header>

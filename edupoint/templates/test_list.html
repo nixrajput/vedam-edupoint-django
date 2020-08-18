@@ -1,0 +1,81 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <title>Vedam EduPoint</title>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link href="{% static 'img/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
+
+    {% include 'widgets/styles.html' %}
+
+</head>
+
+<body>
+
+{% include 'widgets/header.html' %}
+
+<main>
+
+    <div class="slider-area ">
+        <!-- Mobile Menu -->
+        <div class="single-slider slider-height2 d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap text-center">
+                            <h2>Available Tests</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if testpaper_list %}
+
+    <section class="category-area section-padding30">
+        <div class="container-fluid">
+            <div class="row">
+
+                {% for test in testpaper_list %}
+
+                <div class="col-xl-4 col-lg-6">
+                    <div class="single-category mb-30">
+                        <div class="category-img">
+                            <img src="{% static 'img/courses/graduation.svg' %}" alt="test_img">
+                            <div class="category-caption">
+                                <span class="collection">{{test.name}}</span>
+                                <h2>{{test.subject}}</h2>
+                                <a class="btn border-btn test-start-btn is-link" href="{% url 'online-test-take' slug=test.slug %}">start now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+    {% else %}
+    <p>
+        There is no available tests.
+    </p>
+    {% endif %}
+
+</main>
+
+{% include 'widgets/footer.html' %}
+
+{% include 'widgets/scripts.html' %}
+
+</body>
+
+</html>

@@ -1,0 +1,113 @@
+{% load static %}
+{% load i18n %}
+{% load quiz_tags %}
+{% load mathfilters %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <title>Vedam EduPoint</title>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link href="{% static 'img/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
+
+    {% include 'widgets/styles.html' %}
+
+</head>
+
+<body>
+
+{% include 'widgets/header.html' %}
+
+<main>
+
+    <section class="category-area mt-40">
+
+        {% if paper_scores %}
+
+        <h1 class="text-center">Question Category Scores</h1>
+
+        <table class="table table-bordered table-striped text-center">
+
+            <thead>
+            <tr>
+                <th>Test Paper</th>
+                <th>Correctly Answered</th>
+                <th>Incorrect</th>
+                <th>%</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+
+            {% for paper, value in paper_scores.items %}
+            <tr>
+                <td>{{ paper }}</td>
+                <td>{{ value.0 }}</td>
+                <td>{{ value.1 }}</td>
+                <td>{{ value.2 }}</td>
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+        {% endif %}
+
+        {% if tests %}
+
+        <br>
+
+        <h1 class="text-center">Previous Test Papers</h1>
+        <p class="lead text-center">
+            Below are the results of exams that you have completed.
+        </p>
+
+        <table class="table table-bordered table-striped text-center">
+
+            <thead>
+            <tr>
+                <th>Test Paper</th>
+                <th>Score</th>
+                <th>Possible Score</th>
+                <th>%</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            {% for test in tests %}
+
+            <tr>
+                <td>{{ test.paper.name }}</td>
+                <td>{{ test.current_score|mul:4 }}</td>
+                <td>{{ test.get_max_score|mul:4 }}</td>
+                <td>{{ test.get_percent_correct }}</td>
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+{% include 'widgets/footer.html' %}
+
+{% include 'widgets/scripts.html' %}
+
+</body>
+
+</html>

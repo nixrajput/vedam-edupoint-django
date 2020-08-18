@@ -1,10 +1,12 @@
 {% load static %}
-{% load widget_tweaks %}
+{% load i18n %}
+{% load quiz_tags %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="en">
 
 <head>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta content="ie=edge" http-equiv="x-ua-compatible">
     <title>Vedam EduPoint</title>
@@ -20,9 +22,10 @@
 {% include 'widgets/header.html' %}
 
 <main>
+
     <div class="slider-area">
         <div class="slider-active">
-            <div class="single-slider">
+            <div class="single-slider slider-height2">
 
                 <div class="row">
 
@@ -30,20 +33,20 @@
 
                         <div class="ml-20 mr-20 text-center pt-100">
 
-                            <img class="mail-img" src="{% static 'img/hero/mail_sent.svg' %}">
+                            {% if user.is_authenticated %}
+
+                            <img class="error-img" src="{% static 'img/hero/error.svg' %}">
 
                             <br>
 
-                            <p class="msg-text">
-                                We've emailed you instructions for setting your password, if an account exists with the
-                                email you entered. You should receive them shortly.
-                            </p>
+                            <p class="msg-text">You have already appeared in this test and only one sitting is permitted.</p>
 
-                            <p class="msg-text">
-                                If you don't receive an email, please make sure you've entered the address you
-                                registered with,
-                                and check your spam folder.
-                            </p>
+                            {% else %}
+
+                            <p class="msg-text">This exam is only accessible to signed in users.</p>
+
+                            {% endif %}
+
                         </div>
 
                     </div>
@@ -54,6 +57,8 @@
 
         </div>
     </div>
+
+
 </main>
 
 {% include 'widgets/footer.html' %}

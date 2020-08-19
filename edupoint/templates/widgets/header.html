@@ -2,7 +2,7 @@
 {% load i18n %}
 
 <header>
-    <!-- Header Start -->
+
     <div class="header-area">
         <div class="main-header ">
             <div class="header-bottom  header-sticky">
@@ -19,6 +19,7 @@
                             <div class="main-menu f-right d-none d-lg-block">
                                 <nav>
                                     <ul id="navigation">
+
                                         <li><a href="{% url 'home' %}">Home</a></li>
                                         <li class="hot"><a href="">Latest</a>
                                             <ul class="submenu">
@@ -38,6 +39,7 @@
                                         </li>
                                         <li><a href="{% url 'about' %}">About</a></li>
                                         <li><a href="{% url 'contact' %}">Contact</a></li>
+
                                     </ul>
                                 </nav>
                             </div>
@@ -103,9 +105,25 @@
                             </ul>
                         </div>
 
+                        {% else %}
+
+                        <div class="col-xl-5 col-lg-3 col-md-3 col-sm-3 fix-card">
+                            <ul class="header-right f-right d-none d-lg-block d-flex justify-content-between">
+                                <li class="header-link d-lg-block">
+                                    Login / Register
+
+                                    <ul class="user-submenu">
+                                        <li><a href="{% url 'login' %}">Sign In</a></li>
+                                        <hr>
+                                        <li><a href="{% url 'register' %}">Register</a></li>
+                                    </ul>
+
+                                </li>
+                            </ul>
+                        </div>
+
                         {% endif %}
 
-                        <!-- Mobile Menu -->
                         <div class="col-12">
                             <div class="mobile_menu d-block d-lg-none"></div>
                         </div>
@@ -114,5 +132,5 @@
             </div>
         </div>
     </div>
-    <!-- Header End -->
+
 </header>

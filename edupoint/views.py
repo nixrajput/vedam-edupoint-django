@@ -16,13 +16,20 @@ from .models import *
 from .tokens import *
 
 
-@login_required(login_url='login')
 def home(request):
-    current_user = request.user
 
     try:
-        profile_img = [UserProfileImage.objects.filter(user_id=current_user.userId).latest('updated_at')]
-    except ObjectDoesNotExist:
+        logged_in_user = request.user.is_authenticated()
+    except TypeError:
+        logged_in_user = request.user.is_authenticated
+
+    if logged_in_user:
+        current_user = request.user
+        try:
+            profile_img = [UserProfileImage.objects.filter(user_id=current_user.userId).latest('updated_at')]
+        except ObjectDoesNotExist:
+            profile_img = []
+    else:
         profile_img = []
 
     return render(request, 'home.html', {'profileImg': profile_img})
@@ -64,30 +71,6 @@ class SittingFilterTitleMixin(object):
             queryset = queryset.filter(testpaper__name__icontains=test_filter)
 
         return queryset
-
-
-class TestListView(ListView):
-    model = TestPaper
-    template_name = 'test_list.html'
-
-    def get_queryset(self):
-        queryset = super(TestListView, self).get_queryset()
-        return queryset.filter(roll_out=True)
-
-
-class TestDetailView(DetailView):
-    model = TestPaper
-    slug_field = 'slug'
-    template_name = 'online_test.html'
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-
-        if self.object.roll_out is not True:
-            raise PermissionDenied
-
-        context = self.get_context_data(object=self.object)
-        return self.render_to_response(context)
 
 
 class UserProgressView(TemplateView):
@@ -142,12 +125,37 @@ class TestMarkingDetail(TestMarkerMixin, DetailView):
         return context
 
 
+class TestListView(ListView):
+    model = TestPaper
+    template_name = 'test_list.html'
+
+    def get_queryset(self):
+        queryset = super(TestListView, self).get_queryset()
+        return queryset.filter(roll_out=True)
+
+
+class TestDetailView(DetailView):
+    model = TestPaper
+    slug_field = 'slug'
+    template_name = 'test_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object.roll_out is not True:
+            raise PermissionDenied
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+
 class TestTakeView(FormView):
     form_class = QuestionForm
     template_name = 'online_test.html'
     result_template_name = 'result.html'
     single_complete_template_name = 'single_complete.html'
 
+    @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         self.testpaper = get_object_or_404(TestPaper, slug=self.kwargs['slug'])
         if self.testpaper.roll_out is not True:

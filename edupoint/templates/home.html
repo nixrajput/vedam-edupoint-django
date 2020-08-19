@@ -25,7 +25,7 @@
 <main>
 
     <div class="slider-area ">
-        <!-- Mobile Menu -->
+
         <div class="slider-active">
             <div class="single-slider slider-height">
                 <div class="container">
@@ -35,28 +35,28 @@
                                 <img alt="" src="{% static 'img/hero/online-developer.svg' %}">
                             </div>
                         </div>
+
                         <div class="col-xl-5 col-lg-5 col-md-5 col-sm-8">
                             <div class="hero__caption">
                                 <span data-animation="fadeInRight" data-delay=".4s">Free Online Test</span>
                                 <h1 data-animation="fadeInRight" data-delay=".6s">Welcome <br> {{user.first_name}}
                                     {{user.last_name}}</h1>
                                 <p data-animation="fadeInRight" data-delay=".8s">Try Our Online Test Now!</p>
-                                <!-- Hero-btn -->
                                 <div class="hero__btn" data-animation="fadeInRight" data-delay="1s">
                                     <a class="btn hero-btn" href="{% url 'online-test' %}">ONLINE TEST</a>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Courses Area Start-->
     <section class="category-area section-padding30">
         <div class="container-fluid">
-            <!-- Section Tittle -->
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-tittle text-center mb-85">
@@ -64,11 +64,13 @@
                     </div>
                 </div>
             </div>
+
             <div class="row">
+
                 <div class="col-xl-4 col-lg-6">
                     <div class="single-category mb-30">
                         <div class="category-img">
-                            <img src="{% static 'img/courses/workspace.svg' %}" alt="Course-1">
+                            <img src="{% static 'img/courses/workspace.svg' %}" alt="Course">
                             <div class="category-caption">
                                 <span class="collection">Coming Soon</span>
                                 <h2>9th-10th</h2>
@@ -77,30 +79,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-6">
-                    <div class="single-category mb-30">
-                        <div class="category-img">
-                            <img src="{% static 'img/courses/workspace.svg' %}" alt="Course-2">
-                            <div class="category-caption">
-                                <span class="collection">Coming Soon</span>
-                                <h2>IIT-JEE</h2>
-                                <a class="btn border-btn test-start-btn is-link" href="">Enroll now</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-4 col-lg-6">
-                    <div class="single-category mb-30">
-                        <div class="category-img">
-                            <img src="{% static 'img/courses/workspace.svg' %}" alt="Course-3">
-                            <div class="category-caption">
-                                <span class="collection">Coming Soon</span>
-                                <h2>NEET</h2>
-                                <a class="btn border-btn test-start-btn is-link" href="">Enroll now</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </section>

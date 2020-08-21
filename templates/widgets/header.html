@@ -8,14 +8,12 @@
             <div class="header-bottom  header-sticky">
                 <div class="container-fluid">
                     <div class="row align-items-center">
-                        <!-- Logo -->
                         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-3">
                             <div class="logo">
                                 <a href="{% url 'home' %}"><img alt="" src="{% static 'img/logo.png' %}"></a>
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-8 col-md-7 col-sm-5">
-                            <!-- Main-menu -->
                             <div class="main-menu f-right d-none d-lg-block">
                                 <nav>
                                     <ul id="navigation">
@@ -26,9 +24,9 @@
                                                 <li><a href="{% url 'online-test' %}"> Online Test</a></li>
                                                 <li><a href="#"> Courses</a>
                                                     <ul class="submenu-sub">
-                                                        <li><a href="#">Class 5th-8th</a></li>
-                                                        <li><a href="#">Class 9th-10th</a></li>
-                                                        <li><a href="#">Class 11th-12th</a></li>
+                                                        <li><a href="#">Class 6TH-8TH</a></li>
+                                                        <li><a href="#">Class 9TH-10TH</a></li>
+                                                        <li><a href="#">Class 11TH-12TH</a></li>
                                                         <li><a href="#">IIT-JEE</a></li>
                                                         <li><a href="#">NEET</a></li>
                                                     </ul>
@@ -51,8 +49,8 @@
                             <ul class="header-right f-right d-none d-lg-block d-flex justify-content-between">
 
                                 <li class="d-none d-xl-block">
-                                    <div class="favorit-items" id="favorite-count">
-                                        <a href=""><i class="far fa-heart"></i></a>
+                                    <div class="user-card">
+                                        <a href="{% url 'test-progress' %}"><img src="{% static 'img/progress.svg' %}" alt="img"></i></a>
 
                                     </div>
                                 </li>
@@ -60,7 +58,7 @@
                                 <li>
                                     <div class="d-none d-xl-block">
                                         <div class="shopping-card">
-                                            <a href=""><i class="fas fa-shopping-cart"></i></a>
+                                            <a href=""><i class="fas fa-bell"></i></a>
                                         </div>
                                     </div>
                                 </li>

@@ -41,7 +41,6 @@
                         <th>Question</th>
                         <th>User Answer</th>
                         <th></th>
-                        <th></th>
                     </tr>
                     </thead>
 
@@ -51,26 +50,32 @@
                     <tr>
                         <td>
                             {{ question.text }}
+
                             {% if question.figure %}
-                            <div style="max-width: 100px;"><img src="{{ question.figure.url }}"
-                                                                alt="{{ question.figure }}"/>
+
+                            <div style="max-width: 100px;">
+                                <img src="{{ question.figure.url }}" alt="Figure"/>
                             </div>
+
                             {% endif %}
                         </td>
+
                         <td>{{ question|answer_choice_to_string:question.user_answer }}</td>
+
                         <td>
                             {% if question.id in sitting.get_incorrect_questions %}
+
                             <p>Incorrect</p>
+
+                            {% elif question.id in sitting.get_skipped_questions %}
+
+                            <p>Skipped</p>
+
                             {% else %}
+
                             <p>Correct</p>
+
                             {% endif %}
-                        </td>
-                        <td>
-                            <form action="" method="POST">
-                                    {% csrf_token %}
-                                <input type=hidden name="qid" value="{{ question.id }}">
-                                <button type="submit" class="link-btn">Toggle Answer</button>
-                            </form>
                         </td>
                     </tr>
 

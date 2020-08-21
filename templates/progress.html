@@ -34,9 +34,10 @@
             <thead>
             <tr>
                 <th>Test Paper</th>
-                <th>Correctly Answered</th>
+                <th>Correct</th>
+                <th>Incorrect</th>
+                <th>Skipped</th>
                 <th>Total Questions</th>
-                <th>%</th>
             </tr>
             </thead>
 
@@ -47,6 +48,7 @@
             <tr>
                 <td>{{ cat }}</td>
                 <td>{{ value.0 }}</td>
+                <td>{{ value.3 }}</td>
                 <td>{{ value.1 }}</td>
                 <td>{{ value.2 }}</td>
             </tr>
@@ -59,7 +61,7 @@
 
         {% else %}
 
-        <p class="text-center">You didn't appeared in any category yet.</p>
+        <p class="text-center">Record not found for any category.</p>
 
         {% endif %}
 
@@ -78,8 +80,9 @@
             <thead>
             <tr>
                 <th>Test Paper</th>
-                <th>Score</th>
-                <th>Possible Score</th>
+                <th>Your Score</th>
+                <th>Negative Marks</th>
+                <th>Total Marks</th>
                 <th>%</th>
             </tr>
             </thead>
@@ -91,6 +94,7 @@
             <tr>
                 <td>{{ test.paper.name }}</td>
                 <td>{{ test.current_score }}</td>
+                <td>{{ test.get_negative_score }}</td>
                 <td>{{ test.get_max_score }}</td>
                 <td>{{ test.get_percent_correct }}</td>
             </tr>
@@ -103,7 +107,7 @@
 
         {% else %}
 
-        <p class="text-center">You didn't appeared in any test yet.</p>
+        <p class="text-center">Record not found for any test.</p>
 
         {% endif %}
 

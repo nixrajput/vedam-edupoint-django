@@ -20,9 +20,15 @@ class MultiChoiceQuestion(Question):
         verbose_name=_("Answer Order"))
 
     def check_if_correct(self, guess):
-        answer = Answer.objects.get(id=guess)
 
-        if answer.correct is True:
+        if guess is not '':
+            answer = Answer.objects.get(id=guess)
+        else:
+            answer = ''
+
+        if answer == '':
+            return 'skipped'
+        elif answer.correct is True:
             return True
         else:
             return False
@@ -44,7 +50,13 @@ class MultiChoiceQuestion(Question):
                 self.order_answers(Answer.objects.filter(question=self))]
 
     def answer_choice_to_string(self, guess):
-        return Answer.objects.get(id=guess).content
+
+        if guess == '':
+            answer = 'Skipped'
+        else:
+            answer = Answer.objects.get(id=guess).content
+
+        return answer
 
     class Meta:
         verbose_name = _("Multiple Choice Question")

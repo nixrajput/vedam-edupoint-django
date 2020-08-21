@@ -52,12 +52,15 @@
 
                 <div>
                     <h2><strong>Exam Results</strong></h2>
+
+                    <br>
+
                     <p>Test Name: <strong>{{ paper.name }}</strong></p>
 
                     <hr>
 
                     <p class="lead">
-                        You scored {{ score }} marks out of {{ max_score }}, and giving {{ percent }}% percent correct answer.
+                        You scored {{ score }} marks out of {{ max_score }} marks, and giving {{ percent }}% percent correct answer.
                     </p>
 
                     {% if paper.pass_mark %}
@@ -66,13 +69,6 @@
                     <p class="lead" style="color: #000;">{{ sitting.result_message }}</p>
 
                     <hr>
-
-                    {% endif %}
-
-                    {% if user.is_authenticated %}
-
-                    <p>The result of this exam will be stored in your progress section so you can review and monitor
-                        your progress.</p>
 
                     {% endif %}
 

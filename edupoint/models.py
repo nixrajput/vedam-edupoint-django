@@ -136,6 +136,7 @@ class TestPaper(models.Model):
     )
     slug = models.SlugField(
         blank=True,
+        editable=False,
         verbose_name=_("URL"),
         help_text=_("A user friendly url for test.")
     )
@@ -193,6 +194,18 @@ class TestPaper(models.Model):
         verbose_name=_("Fail Text"),
         help_text=_("Displayed if user fails.")
     )
+    correct_marking = models.SmallIntegerField(
+        blank=True,
+        default=0,
+        verbose_name=_("Correct Marking"),
+        help_text=_("Marking on correct answer."),
+    )
+    negative_marking = models.SmallIntegerField(
+        blank=True,
+        default=0,
+        verbose_name=_("Negative Marking"),
+        help_text=_("Marking on incorrect answer."),
+    )
     timestamp = models.DateTimeField(
         auto_now_add=True,
     )
@@ -244,7 +257,7 @@ class Progress(models.Model):
 
     score = models.CharField(
         max_length=1024,
-        verbose_name=_("Score"),
+        verbose_name=_("Category Score"),
         validators=[validate_comma_separated_integer_list]
     )
 
@@ -261,48 +274,53 @@ class Progress(models.Model):
         output = {}
 
         for cat in Category.objects.all():
-            to_find = re.escape(cat.title) + r",(\d+),(\d+),"
+            to_find = re.escape(cat.title) + r",(\d+),(\d+),(\d+),"
 
             match = re.search(to_find, self.score, re.IGNORECASE)
 
             if match:
-                score = int(match.group(1))
-                possible = int(match.group(2))
+                correct = int(match.group(1))
+                skipped = int(match.group(2))
+                possible = int(match.group(3))
 
                 try:
-                    percent = int(round((float(score) / float(possible)) * 100))
+                    incorrect = int(possible - (correct + skipped))
                 except:
-                    percent = 0
+                    incorrect = 0
 
-                output[cat.title] = [score, possible, percent]
+                output[cat.title] = [correct, skipped, possible, incorrect]
 
         if len(self.score) > len(score_before):
             self.save()
 
         return output
 
-    def update_score(self, question, score_to_add=0, possible_to_add=0):
+    def update_score(self, question, correct_to_add=0, skipped_to_add=0, possible_to_add=0):
         category_test = Category.objects.filter(title=question.category).exists()
 
         if any([item is False for item in [category_test,
-                                           score_to_add,
+                                           correct_to_add,
+                                           skipped_to_add,
                                            possible_to_add,
-                                           isinstance(score_to_add, int),
+                                           isinstance(correct_to_add, int),
+                                           isinstance(skipped_to_add, int),
                                            isinstance(possible_to_add, int)]]):
             return _("Error"), _("test paper does not exist or invalid score.")
 
-        to_find = re.escape(str(question.category)) + r",(?P<score>\d+),(?P<possible>\d+),"
+        to_find = re.escape(str(question.category)) + r",(?P<correct>\d+),(?P<skipped>\d+),(?P<possible>\d+),"
 
         match = re.search(to_find, self.score, re.IGNORECASE)
 
         if match:
-            updated_score = int(match.group('score')) + abs(score_to_add)
+            updated_correct = int(match.group('correct')) + abs(correct_to_add)
+            updated_skipped = int(match.group('skipped')) + abs(skipped_to_add)
             updated_possible = int(match.group('possible')) + abs(possible_to_add)
 
             new_score = ",".join(
                 [
                     str(question.category),
-                    str(updated_score),
+                    str(updated_correct),
+                    str(updated_skipped),
                     str(updated_possible),
                     ""
                 ])
@@ -314,7 +332,8 @@ class Progress(models.Model):
             self.score = ",".join(
                 [
                     str(question.category),
-                    str(score_to_add),
+                    str(correct_to_add),
+                    str(skipped_to_add),
                     str(possible_to_add),
                     ""
                 ])
@@ -397,6 +416,13 @@ class Sitting(models.Model):
         max_length=1024,
         blank=True,
         verbose_name=_("Incorrect questions"),
+        validators=[validate_comma_separated_integer_list]
+    )
+
+    skipped_questions = models.CharField(
+        max_length=1024,
+        blank=True,
+        verbose_name=_("Skipped questions"),
         validators=[validate_comma_separated_integer_list])
 
     current_score = models.IntegerField(
@@ -432,6 +458,8 @@ class Sitting(models.Model):
         verbose_name = _("User Sitting")
         verbose_name_plural = _("User Sitting Record")
 
+    # CLASS METHODS
+
     def get_first_question(self):
         if not self.question_list:
             return False
@@ -452,30 +480,6 @@ class Sitting(models.Model):
         self.current_score += int(points)
         self.save()
 
-    @property
-    def get_current_score(self):
-        return self.current_score
-
-    def _question_ids(self):
-        return [int(n) for n in self.question_order.split(',') if n]
-
-    @property
-    def get_percent_correct(self):
-        dividend = float(self.current_score)
-        divisor = len(self._question_ids()) * 4
-        if divisor < 1:
-            return 0
-
-        if dividend > divisor:
-            return 100
-
-        correct = int(round((dividend / divisor) * 100))
-
-        if correct >= 1:
-            return correct
-        else:
-            return 0
-
     def mark_testpaper_complete(self):
         self.complete = True
         self.end = now()
@@ -485,12 +489,19 @@ class Sitting(models.Model):
         if len(self.incorrect_questions) > 0:
             self.incorrect_questions += ','
         self.incorrect_questions += str(question.id) + ","
-        self.add_to_score(-1)
         self.save()
 
-    @property
-    def get_incorrect_questions(self):
-        return [int(q) for q in self.incorrect_questions.split(',') if q]
+    def add_skipped_question(self, question):
+        if len(self.skipped_questions) > 0:
+            self.skipped_questions += ','
+        self.skipped_questions += str(question.id) + ","
+        self.save()
+
+    def _question_ids(self):
+        return [int(n) for n in self.question_order.split(',') if n]
+
+    def _incorrect_question_ids(self):
+        return [int(n) for n in self.incorrect_questions.split(',') if n]
 
     def remove_incorrect_question(self, question):
         current = self.get_incorrect_questions
@@ -498,17 +509,6 @@ class Sitting(models.Model):
         self.incorrect_questions = ','.join(map(str, current))
         self.add_to_score(1)
         self.save()
-
-    @property
-    def check_if_passed(self):
-        return self.get_percent_correct >= self.paper.pass_mark
-
-    @property
-    def result_message(self):
-        if self.check_if_passed:
-            return self.paper.success_text
-        else:
-            return self.paper.fail_text
 
     def add_user_answer(self, question, guess):
         current = json.loads(self.user_answers)
@@ -530,16 +530,6 @@ class Sitting(models.Model):
 
         return questions
 
-    @property
-    def questions_with_user_answers(self):
-        return {
-            q: q.user_answer for q in self.get_questions(with_answers=True)
-        }
-
-    @property
-    def get_max_score(self):
-        return len(self._question_ids()) * 4
-
     def progress(self):
         answered = len(json.loads(self.user_answers))
         total = self.get_max_score
@@ -547,6 +537,62 @@ class Sitting(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    # CLASS PROPERTIES
+
+    @property
+    def get_current_score(self):
+        return self.current_score
+
+    @property
+    def get_percent_correct(self):
+        dividend = float(self.current_score)
+        divisor = len(self._question_ids()) * self.paper.correct_marking
+        if divisor < 1:
+            return 0
+
+        if dividend > divisor:
+            return 100
+
+        correct = float(((dividend / divisor) * 100))
+
+        if correct >= 1:
+            return correct
+        else:
+            return 0
+
+    @property
+    def get_max_score(self):
+        return len(self._question_ids()) * self.paper.correct_marking
+
+    @property
+    def get_negative_score(self):
+        return len(self._incorrect_question_ids())
+
+    @property
+    def get_incorrect_questions(self):
+        return [int(q) for q in self.incorrect_questions.split(',') if q]
+
+    @property
+    def get_skipped_questions(self):
+        return [int(q) for q in self.skipped_questions.split(',') if q]
+
+    @property
+    def check_if_passed(self):
+        return self.get_percent_correct >= self.paper.pass_mark
+
+    @property
+    def result_message(self):
+        if self.check_if_passed:
+            return self.paper.success_text
+        else:
+            return self.paper.fail_text
+
+    @property
+    def questions_with_user_answers(self):
+        return {
+            q: q.user_answer for q in self.get_questions(with_answers=True)
+        }
 
 
 class Question(models.Model):

@@ -55,6 +55,7 @@ class UserProgressView(TemplateView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         context['cat_scores'] = progress.list_all_cat_scores
         context['tests'] = progress.show_tests()
+        context['profileImg'] = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
         return context
 
 
@@ -76,19 +77,6 @@ class TestMarkingDetail(TestMarkerMixin, DetailView):
     model = Sitting
     template_name = 'sitting_detail.html'
 
-    def post(self, request, *args, **kwargs):
-        sitting = self.get_object()
-
-        q_to_toggle = request.POST.get('qid', None)
-        if q_to_toggle:
-            q = Question.objects.get_subclass(id=int(q_to_toggle))
-            if int(q_to_toggle) in sitting.get_incorrect_questions:
-                sitting.remove_incorrect_question(q)
-            else:
-                sitting.add_incorrect_question(q)
-
-        return self.get(request)
-
     def get_context_data(self, **kwargs):
         context = super(TestMarkingDetail, self).get_context_data(**kwargs)
         context['questions'] = context['sitting'].get_questions(with_answers=True)
@@ -98,6 +86,26 @@ class TestMarkingDetail(TestMarkerMixin, DetailView):
 class TestListView(ListView):
     model = TestPaper
     template_name = 'test_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TestListView, self).get_context_data(**kwargs)
+
+        try:
+            self.logged_in_user = self.request.user.is_authenticated()
+        except TypeError:
+            self.logged_in_user = self.request.user.is_authenticated
+
+        if self.logged_in_user:
+            try:
+                profile_img = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+            except ObjectDoesNotExist:
+                profile_img = []
+        else:
+            profile_img = []
+
+        context['profileImg'] = profile_img
+
+        return context
 
     def get_queryset(self):
         queryset = super(TestListView, self).get_queryset()
@@ -117,6 +125,26 @@ class TestDetailView(DetailView):
 
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(TestDetailView, self).get_context_data(**kwargs)
+
+        try:
+            self.logged_in_user = self.request.user.is_authenticated()
+        except TypeError:
+            self.logged_in_user = self.request.user.is_authenticated
+
+        if self.logged_in_user:
+            try:
+                profile_img = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+            except ObjectDoesNotExist:
+                profile_img = []
+        else:
+            profile_img = []
+
+        context['profileImg'] = profile_img
+
+        return context
 
 
 class TestTakeView(FormView):
@@ -140,7 +168,11 @@ class TestTakeView(FormView):
             self.sitting = Sitting.objects.user_sitting(request.user, self.testpaper)
 
         if self.sitting is False:
-            return render(request, self.single_complete_template_name)
+            context = {
+                'profileImg': [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+
+            }
+            return render(request, self.single_complete_template_name, context)
 
         return super(TestTakeView, self).dispatch(request, *args, **kwargs)
 
@@ -171,6 +203,7 @@ class TestTakeView(FormView):
         context = super(TestTakeView, self).get_context_data(**kwargs)
         context['question'] = self.question
         context['testpaper'] = self.testpaper
+        context['profileImg'] = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
         if hasattr(self, 'previous'):
             context['previous'] = self.previous
         if hasattr(self, 'progress'):
@@ -183,11 +216,18 @@ class TestTakeView(FormView):
         is_correct = self.question.check_if_correct(guess)
 
         if is_correct is True:
-            self.sitting.add_to_score(4)
-            progress.update_score(self.question, 1, 1)
+            self.sitting.add_to_score(self.testpaper.correct_marking)
+            progress.update_score(self.question, 1, 0, 1)
+
+        elif is_correct == 'skipped':
+            self.sitting.add_to_score(0)
+            self.sitting.add_skipped_question(self.question)
+            progress.update_score(self.question, 0, 1, 1)
+
         else:
+            self.sitting.add_to_score(-self.testpaper.negative_marking)
             self.sitting.add_incorrect_question(self.question)
-            progress.update_score(self.question, 0, 1)
+            progress.update_score(self.question, 0, 0, 1)
 
         if self.testpaper.answers_at_end is not True:
             self.previous = {'previous_answer': guess,
@@ -205,6 +245,7 @@ class TestTakeView(FormView):
         results = {
             'paper': self.testpaper,
             'score': self.sitting.get_current_score,
+            'negative_score': self.sitting.get_negative_score,
             'max_score': self.sitting.get_max_score,
             'percent': self.sitting.get_percent_correct,
             'sitting': self.sitting,
@@ -216,6 +257,8 @@ class TestTakeView(FormView):
         if self.testpaper.answers_at_end:
             results['questions'] = self.sitting.get_questions(with_answers=True)
             results['incorrect_questions'] = self.sitting.get_incorrect_questions
+            results['skipped_questions'] = self.sitting.get_skipped_questions
+            results['profileImg'] = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
 
         if self.testpaper.save_record is False:
             self.sitting.delete()

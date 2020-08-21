@@ -2,12 +2,13 @@
     <img width="200px"
         src="https://github.com/nixrajput/nixlab-inc/blob/master/vedam-edupoint-logo-01.png" 
         align="center" alt="Vedam EduPoint" />
+        <hr>
     <p align="center">An Edu-tech web app developed using django framework!</p></p>
 
 <br />
 
-<h3>Front-End 		:	HTML, CSS, JS</h3>
-<h3>Back-End 		: 	PostgreSQL, AWS</h3>
+<h3>Front-End 		    :	HTML, CSS, JS</h3>
+<h3>Back-End 		    : 	PostgreSQL, AWS</h3>
 <h3>Programming 	    : 	Python</h3>
 <h3>Web Hosting 	    : 	Heroku</h3>
 

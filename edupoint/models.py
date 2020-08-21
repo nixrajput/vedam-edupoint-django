@@ -485,8 +485,7 @@ class Sitting(models.Model):
         if len(self.incorrect_questions) > 0:
             self.incorrect_questions += ','
         self.incorrect_questions += str(question.id) + ","
-        if self.complete:
-            self.add_to_score(-1)
+        self.add_to_score(-1)
         self.save()
 
     @property
@@ -539,7 +538,7 @@ class Sitting(models.Model):
 
     @property
     def get_max_score(self):
-        return len(self._question_ids())
+        return len(self._question_ids()) * 4
 
     def progress(self):
         answered = len(json.loads(self.user_answers))

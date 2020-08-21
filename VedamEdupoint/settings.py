@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'multiplechoice',
     'widget_tweaks',
     'storages',
-    'mathfilters',
 ]
 
 MIDDLEWARE = [

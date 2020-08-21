@@ -183,7 +183,7 @@ class TestTakeView(FormView):
         is_correct = self.question.check_if_correct(guess)
 
         if is_correct is True:
-            self.sitting.add_to_score(1)
+            self.sitting.add_to_score(4)
             progress.update_score(self.question, 1, 1)
         else:
             self.sitting.add_incorrect_question(self.question)
@@ -203,7 +203,7 @@ class TestTakeView(FormView):
 
     def final_result_user(self):
         results = {
-            'quiz': self.testpaper,
+            'paper': self.testpaper,
             'score': self.sitting.get_current_score,
             'max_score': self.sitting.get_max_score,
             'percent': self.sitting.get_percent_correct,

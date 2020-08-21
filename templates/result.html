@@ -52,16 +52,15 @@
 
                 <div>
                     <h2>Exam Results</h2>
-                    <p>
-                        <small class="muted">Exam title: </small>
-                        <strong>{{ paper.name }}</strong></p>
+                    <p>Test Name: <strong>{{ paper.name }}</strong></p>
+
+                    <hr>
 
                     <p class="lead">
-                        You answered {{ score }} questions correctly out of {{ max_score }},
-                        giving you {{ percent }} percent correct
+                        You scored {{ score }} marks out of {{ max_score }}, and {{ percent }} percent correct.
                     </p>
 
-                    {% if quiz.pass_mark %}
+                    {% if paper.pass_mark %}
                     <hr>
                     <p class="lead">{{ sitting.result_message }}</p>
                     <hr>

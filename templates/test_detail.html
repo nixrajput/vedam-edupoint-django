@@ -24,7 +24,7 @@
 
     {% if testpaper %}
 
-    <section class="category-area mt-40">
+    <section class="category-area mt-50">
         <div class="container-fluid">
             <div class="row">
 
@@ -36,7 +36,7 @@
                     <h2><strong>Category:</strong> {{testpaper.category}}</h2>
                     <h2><strong>Subject:</strong> {{testpaper.subject}}</h2>
                     <h4><b>Maximum Marks:</b> {{testpaper.max_marks}}</h4>
-                    <h4><b>Pass Marks:</b> {{testpaper.pass_mark}}</h4>
+                    <h4><b>Pass Marks:</b> {{testpaper.pass_mark}}%</h4>
                     <h4><b>Maximum Time:</b> {{testpaper.max_time}} min</h4>
                     <p class="text-justify">{{testpaper.instructions|linebreaks}}</p>
                     <a class="btn border-btn test-start-btn is-link"

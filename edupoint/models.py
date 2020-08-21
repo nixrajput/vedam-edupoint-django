@@ -1,81 +1,91 @@
 import json
 import re
+
+from django.conf import settings
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.core.validators import (
     validate_comma_separated_integer_list, MaxValueValidator
 )
 from django.db import models
-import datetime
-import os
-import uuid
-
-from django.conf import settings
-from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
-import django.contrib.auth.validators
 from django.template.defaultfilters import slugify
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from model_utils.managers import InheritanceManager
 
 
-class CustomUser(AbstractUser):
-    userId = models.UUIDField(
-        default=uuid.uuid4,
-        primary_key=True,
-        editable=False,
+class CategoryManager(models.Manager):
 
-    )
-    dob = models.DateField(
+    def new_category(self, category):
+        new_category = self.create(category=re.sub('\s+', '-', category).lower())
+
+        new_category.save()
+        return new_category
+
+
+class Category(models.Model):
+    title = models.CharField(
+        max_length=250,
         blank=True,
         null=True,
-        verbose_name=_("DOB"),
-        help_text=_("Date of birth of user.")
-    )
-    is_valid = models.BooleanField(
-        default=False,
-        verbose_name='Verified',
-        help_text=_("User is verified or not.")
+        unique=True,
+        verbose_name=_("Category")
     )
 
-
-def image_path(instance, filename):
-    base_filename, file_extension = os.path.splitext(filename)
-    today = datetime.datetime.now()
-    y = today.strftime('%Y')
-    m = today.strftime('%m')
-    d = today.strftime('%d')
-
-    rand_str = uuid.uuid4()
-    return 'profile_img/{year}/{month}/{date}/{user_id}/{random_string}{ext}' \
-        .format(year=y, month=m, date=d, user_id=instance.user.userId, random_string=rand_str, ext=file_extension)
-
-
-class UserProfileImage(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        null=True,
-        verbose_name=_("User")
-    )
-
-    img = models.ImageField(
-        upload_to=image_path,
-        null=True,
-        verbose_name='Profile Picture',
-        help_text=_("User's profile picture.")
-    )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    objects = CategoryManager()
 
     class Meta:
-        verbose_name = _("Profile Picture")
-        verbose_name_plural = _("Profile Pictures")
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
 
     def __str__(self):
-        return self.user.username
+        return self.title
+
+
+class Course(models.Model):
+    title = models.CharField(
+        max_length=250,
+        blank=True,
+        null=True,
+        verbose_name=_("Course")
+    )
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("Category")
+    )
+
+    objects = CategoryManager()
+
+    class Meta:
+        verbose_name = _("Course")
+        verbose_name_plural = _("Courses")
+
+    def __str__(self):
+        return self.title
+
+
+class Subject(models.Model):
+    title = models.CharField(
+        max_length=250,
+        blank=True,
+        null=True,
+        unique=True,
+        verbose_name=_("Subject")
+    )
+
+    objects = CategoryManager()
+
+    class Meta:
+        verbose_name = _("Subject")
+        verbose_name_plural = _("Subjects")
+
+    def __str__(self):
+        return self.title
 
 
 class TestPaper(models.Model):
@@ -85,22 +95,28 @@ class TestPaper(models.Model):
         blank=False,
         help_text=_("Title for test paper.")
     )
-    course = models.CharField(
-        max_length=250,
-        verbose_name=_("Course"),
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
         blank=False,
+        null=True,
+        verbose_name=_("Category"),
+        help_text=_("Name of category.")
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=True,
+        verbose_name=_("Course"),
         help_text=_("Name of course.")
     )
-    category = models.CharField(
-        max_length=250,
-        verbose_name=_("Category"),
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
         blank=False,
-        help_text=_("Course category name.")
-    )
-    subject = models.CharField(
-        max_length=250,
+        null=True,
         verbose_name=_("Subject"),
-        blank=False,
         help_text=_("Name of subject.")
     )
     max_time = models.IntegerField(
@@ -139,7 +155,7 @@ class TestPaper(models.Model):
     answers_at_end = models.BooleanField(
         blank=False,
         default=False,
-        verbose_name=_("Answers at end"),
+        verbose_name=_("Show Answers"),
         help_text=_("Correct answer is NOT shown after question."
                     " Answers displayed at the end.")
     )
@@ -151,10 +167,10 @@ class TestPaper(models.Model):
                     " a user will be permitted."
                     " Non users cannot sit this exam."),
     )
-    exam_paper = models.BooleanField(
+    save_record = models.BooleanField(
         blank=False,
         default=False,
-        verbose_name=_("Exam Paper"),
+        verbose_name=_("Save Record"),
         help_text=_("If yes, the result of each"
                     " attempt by a user will be"
                     " stored. Necessary for marking."),
@@ -179,13 +195,11 @@ class TestPaper(models.Model):
     )
     timestamp = models.DateTimeField(
         auto_now_add=True,
-        verbose_name=_("Max Time"),
-        help_text=_("Maximum time for test.")
     )
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         if self.single_attempt is True:
-            self.exam_paper = True
+            self.save_record = True
 
         if self.pass_mark > 100:
             raise ValidationError('%s is above 100' % self.pass_mark)
@@ -241,12 +255,13 @@ class Progress(models.Model):
         verbose_name_plural = _("User Progress Record")
 
     @property
-    def list_all_paper_scores(self):
+    def list_all_cat_scores(self):
+
         score_before = self.score
         output = {}
 
-        for paper in TestPaper.objects.all():
-            to_find = re.escape(paper.name) + r",(\d+),(\d+),"
+        for cat in Category.objects.all():
+            to_find = re.escape(cat.title) + r",(\d+),(\d+),"
 
             match = re.search(to_find, self.score, re.IGNORECASE)
 
@@ -259,11 +274,7 @@ class Progress(models.Model):
                 except:
                     percent = 0
 
-                output[paper.name] = [score, possible, percent]
-
-            else:
-                self.score += paper.name + ",0,0,"
-                output[paper.name] = [0, 0]
+                output[cat.title] = [score, possible, percent]
 
         if len(self.score) > len(score_before):
             self.save()
@@ -271,16 +282,16 @@ class Progress(models.Model):
         return output
 
     def update_score(self, question, score_to_add=0, possible_to_add=0):
-        paper_test = TestPaper.objects.filter(name=question.paper).exists()
+        category_test = Category.objects.filter(title=question.category).exists()
 
-        if any([item is False for item in [paper_test,
+        if any([item is False for item in [category_test,
                                            score_to_add,
                                            possible_to_add,
                                            isinstance(score_to_add, int),
                                            isinstance(possible_to_add, int)]]):
             return _("Error"), _("test paper does not exist or invalid score.")
 
-        to_find = re.escape(str(question.paper)) + r",(?P<score>\d+),(?P<possible>\d+),"
+        to_find = re.escape(str(question.category)) + r",(?P<score>\d+),(?P<possible>\d+),"
 
         match = re.search(to_find, self.score, re.IGNORECASE)
 
@@ -290,7 +301,7 @@ class Progress(models.Model):
 
             new_score = ",".join(
                 [
-                    str(question.paper),
+                    str(question.category),
                     str(updated_score),
                     str(updated_possible),
                     ""
@@ -302,7 +313,7 @@ class Progress(models.Model):
         else:
             self.score = ",".join(
                 [
-                    str(question.paper),
+                    str(question.category),
                     str(score_to_add),
                     str(possible_to_add),
                     ""
@@ -546,7 +557,29 @@ class Question(models.Model):
         verbose_name=_("Test Paper"),
         help_text=_("Test paper name.")
     )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=True,
+        verbose_name=_("Category"),
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=True,
+        verbose_name=_("Course"),
+    )
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=True,
+        verbose_name=_("Subject"),
+    )
     text = models.TextField(
+        max_length=2000,
         null=True,
         verbose_name=_("Question"),
         help_text=_("Enter question text.")
@@ -566,117 +599,13 @@ class Question(models.Model):
                     "after the question has "
                     "been answered.")
     )
+
     objects = InheritanceManager()
 
     class Meta:
         verbose_name = _("Question")
         verbose_name_plural = _("Questions")
+        ordering = ['category']
 
     def __str__(self):
         return self.text
-
-
-class ContactUs(models.Model):
-    full_name = models.CharField(
-        max_length=150,
-        null=True,
-        verbose_name=_("Full Name")
-    )
-    subject = models.CharField(
-        max_length=150,
-        null=True,
-        verbose_name=_("Email Subject")
-    )
-    email = models.EmailField(
-        max_length=254,
-        null=True,
-        verbose_name=_("Email Address")
-    )
-    comment = models.TextField(
-        null=True,
-        verbose_name=_("Email Content")
-    )
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = _("Contact Form")
-        verbose_name_plural = _("Contact Forms")
-
-    def __str__(self):
-        return self.subject
-
-
-def admin_image_path(instance, filename):
-    base_filename, file_extension = os.path.splitext(filename)
-    today = datetime.datetime.now()
-    y = today.strftime('%Y')
-    m = today.strftime('%m')
-    d = today.strftime('%d')
-
-    rand_str = uuid.uuid4()
-    return 'admin_img/{year}/{month}/{date}/{user_id}/{random_string}{ext}' \
-        .format(year=y, month=m, date=d, user_id=instance.userId, random_string=rand_str, ext=file_extension)
-
-
-class TeamMember(models.Model):
-    userId = models.UUIDField(
-        default=uuid.uuid4,
-        primary_key=True,
-        editable=False
-    )
-    first_name = models.CharField(
-        max_length=150,
-        null=True,
-        verbose_name=_('First Name'),
-        help_text=_("First name of team member.")
-    )
-    last_name = models.CharField(
-        max_length=150,
-        null=True,
-        verbose_name=_('Last Name'),
-        help_text=_("Last name of team member.")
-    )
-    email = models.EmailField(
-        null=True,
-        unique=True,
-        verbose_name=_('Email Address'),
-        help_text=_("Email address of team member.")
-    )
-    username = models.CharField(
-        max_length=150,
-        null=True,
-        unique=True,
-        validators=[django.contrib.auth.validators.UnicodeUsernameValidator()],
-        verbose_name=_("Username"),
-        help_text=_("Username of team member.")
-    )
-    dob = models.DateField(
-        null=True,
-        verbose_name=_("DOB"),
-        help_text=_("Date of birth of team member.")
-    )
-    img = models.ImageField(
-        upload_to=admin_image_path,
-        null=True,
-        blank=True,
-        verbose_name=_("Profile Picture"),
-        help_text=_("Profile picture of team member.")
-    )
-    about = models.TextField(
-        null=True,
-        verbose_name=_("About"),
-        help_text=_("ABout text for team member.")
-    )
-    designation = models.CharField(
-        max_length=150,
-        null=True,
-        verbose_name=_("Designation"),
-        help_text=_("Current designation of team member.")
-    )
-
-    class Meta:
-        verbose_name = _("Team Member")
-        verbose_name_plural = _("Team Members")
-
-    def __str__(self):
-        return self.username

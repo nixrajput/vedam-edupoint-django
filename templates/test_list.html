@@ -22,7 +22,9 @@
 
 <main>
 
-    <div class="slider-area ">
+    {% if testpaper_list %}
+
+    <div class="slider-area">
         <!-- Mobile Menu -->
         <div class="single-slider slider-height2 d-flex align-items-center">
             <div class="container">
@@ -37,8 +39,6 @@
         </div>
     </div>
 
-    {% if testpaper_list %}
-
     <section class="category-area section-padding30">
         <div class="container-fluid">
             <div class="row">
@@ -51,6 +51,7 @@
                             <img src="{% static 'img/courses/graduation.svg' %}" alt="test_img">
                             <div class="category-caption">
                                 <span class="collection">{{test.name}}</span>
+                                <span class="collection">Course : {{test.course}}</span>
                                 <h2>{{test.subject}}</h2>
                                 <a class="btn border-btn test-start-btn is-link"
                                    href="{% url 'online-test-page' slug=test.slug %}">

@@ -1,12 +1,9 @@
 {% load static %}
-{% load i18n %}
-{% load quiz_tags %}
-
+{% load widget_tweaks %}
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html lang="en">
 
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta content="ie=edge" http-equiv="x-ua-compatible">
     <title>Vedam EduPoint</title>
@@ -22,28 +19,37 @@
 {% include 'widgets/header.html' %}
 
 <main>
-
     <div class="slider-area">
         <div class="slider-active">
-            <div class="single-slider slider-height2">
+            <div class="single-slider">
 
                 <div class="row">
 
                     <div class="col-md-12">
 
-                        <div class="ml-20 mr-20 text-center pt-100">
+                        <div class="ml-20 mr-20 text-center mt-40">
 
-                            {% if user.is_authenticated %}
-
-                            <img class="error-img" src="{% static 'img/hero/error.svg' %}">
+                            <img class="mail-img" src="{% static 'img/hero/mail_sent.svg' %}">
 
                             <br>
 
-                            <p class="msg-text">You have already appeared in this test and only one sitting is permitted.</p>
+                            {% if message1 %}
 
-                            {% else %}
+                            <p class="msg-text">
 
-                            <p class="msg-text">This exam is only accessible to signed in users.</p>
+                                {{message1}}
+
+                            </p>
+
+                            {% endif %}
+
+                            {% if message2 %}
+
+                            <p class="msg-text">
+
+                                {{message2}}
+
+                            </p>
 
                             {% endif %}
 
@@ -57,8 +63,6 @@
 
         </div>
     </div>
-
-
 </main>
 
 {% include 'widgets/footer.html' %}

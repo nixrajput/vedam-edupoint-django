@@ -1,5 +1,6 @@
 from django.contrib import admin
 from edupoint.models import *
+from accounts.models import *
 from multiplechoice.models import *
 from django import forms
 from django.utils.translation import ugettext_lazy as _
@@ -29,8 +30,7 @@ class TestAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TestAdminForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
-            self.fields['questions'].initial = \
-                self.instance.question_set.all().select_subclasses()
+            self.fields['questions'].initial = self.instance.question_set.all().select_subclasses()
 
     def save(self, commit=True):
         paper = super(TestAdminForm, self).save(commit=False)
@@ -43,17 +43,31 @@ class TestAdminForm(forms.ModelForm):
 class TestAdmin(admin.ModelAdmin):
     form = TestAdminForm
 
-    list_display = ('name', 'subject',)
-    list_filter = ('subject',)
-    search_fields = ('subject', 'course')
+    list_display = ('name', 'category', 'subject',)
+    list_filter = ('category', 'subject',)
+    search_fields = ('name', 'category')
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    search_fields = ('title',)
+
+
+class CourseAdmin(admin.ModelAdmin):
+    search_fields = ('title', 'category',)
+    list_display = ('title', 'category',)
+    list_filter = ('category',)
+
+
+class SubjectAdmin(admin.ModelAdmin):
+    search_fields = ('title',)
 
 
 class MultipleChoiceQuestionAdmin(admin.ModelAdmin):
-    list_display = ('text',)
-    list_filter = ('paper',)
-    fields = ('text', 'paper', 'figure', 'explanation', 'answer_order')
-
-    search_fields = ('text', 'explanation')
+    list_display = ('text', 'category', 'subject',)
+    list_filter = ('category', 'course', 'subject',)
+    fields = ('text', 'category', 'course', 'subject',
+              'paper', 'figure', 'explanation', 'answer_order')
+    search_fields = ('text', 'explanation', 'subject',)
     filter_horizontal = ('paper',)
 
     inlines = [AnswerInline]
@@ -63,24 +77,12 @@ class ProgressAdmin(admin.ModelAdmin):
     search_fields = ('user', 'score',)
 
 
-class ProfileImageInline(admin.TabularInline):
-    model = UserProfileImage
-    extra = 1
-    max_num = 1
-
-
-class CustomUsersAdmin(admin.ModelAdmin):
-    inlines = [ProfileImageInline, ]
-
-
-admin.site.register(CustomUser, CustomUsersAdmin)
-admin.site.register(UserProfileImage)
-
 admin.site.register(TestPaper, TestAdmin)
 admin.site.register(MultiChoiceQuestion, MultipleChoiceQuestionAdmin)
 admin.site.register(Progress, ProgressAdmin)
 admin.site.register(Sitting)
-# admin.site.register(TestUser, TestUserAdmin)
-# admin.site.register(UsersAnswer)
+admin.site.register(Category, CategoryAdmin)
+admin.site.register(Course, CourseAdmin)
+admin.site.register(Subject, SubjectAdmin)
 admin.site.register(ContactUs)
 admin.site.register(TeamMember)

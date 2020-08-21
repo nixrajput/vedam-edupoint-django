@@ -3,7 +3,7 @@
         src="https://github.com/nixrajput/nixlab-inc/blob/master/vedam-edupoint-logo-01.png" 
         align="center" alt="Vedam EduPoint" />
         <hr>
-    <p align="center">An Edu-tech web app developed using django framework!</p></p>
+    <p align="center">Vedam EduPoint is a new Ed-Tech startup by young minds of the India.</p></p>
 
 <br />
 

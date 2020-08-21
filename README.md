@@ -1,6 +1,6 @@
 <p align="center">
     <img width="100px"
-        src="https://d1307y6zf828wb.cloudfront.net/static/img/logo/logo.png" 
+        src="https://d1307y6zf828wb.cloudfront.net/static/img/logo.png" 
         align="center" alt="Vedam EduPoint" />
     <h1 align="center">Vedam EduPoint</h1>
     <p align="center">An Edu-tech web app developed using django framework!</p></p>

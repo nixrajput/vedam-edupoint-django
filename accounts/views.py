@@ -126,19 +126,30 @@ def success_confirmation(request):
 
 
 def about_us(request):
+    current_user = request.user
+
     try:
         user_list = TeamMember.objects.all()
+        profile_img = [UserProfileImage.objects.filter(user_id=current_user.userId).latest('updated_at')]
     except ObjectDoesNotExist:
         user_list = []
+        profile_img = []
 
     context = {
         'user_list': user_list,
+        'profileImg': profile_img,
     }
 
     return render(request, 'about.html', context)
 
 
 def contact_us(request):
+    current_user = request.user
+    try:
+        profile_img = [UserProfileImage.objects.filter(user_id=current_user.userId).latest('updated_at')]
+    except ObjectDoesNotExist:
+        profile_img = []
+
     if request.method == 'POST':
         form = ContactForm(request.POST)
 
@@ -166,4 +177,4 @@ def contact_us(request):
 
     else:
         form = ContactForm()
-    return render(request, 'contact.html', {'form': form})
+    return render(request, 'contact.html', {'profileImg': profile_img, 'form': form})

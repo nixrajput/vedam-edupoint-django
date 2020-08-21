@@ -35,7 +35,7 @@
             <tr>
                 <th>Test Paper</th>
                 <th>Correctly Answered</th>
-                <th>Incorrect</th>
+                <th>Total Questions</th>
                 <th>%</th>
             </tr>
             </thead>
@@ -59,12 +59,11 @@
 
         {% else %}
 
-        <p class="text-center">You don't have any category yet.</p>
+        <p class="text-center">You didn't appeared in any category yet.</p>
 
         {% endif %}
 
         <br>
-        <hr>
         <br>
 
         {% if tests %}
@@ -104,7 +103,7 @@
 
         {% else %}
 
-        <p class="text-center">You haven't appeared in any test yet.</p>
+        <p class="text-center">You didn't appeared in any test yet.</p>
 
         {% endif %}
 

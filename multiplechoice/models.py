@@ -21,7 +21,7 @@ class MultiChoiceQuestion(Question):
 
     def check_if_correct(self, guess):
 
-        if guess is not '':
+        if guess != '':
             answer = Answer.objects.get(id=guess)
         else:
             answer = ''

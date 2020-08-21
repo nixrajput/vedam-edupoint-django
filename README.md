@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="100px"
+    <img width="200px"
         src="https://github.com/nixrajput/nixlab-inc/blob/master/vedam-edupoint-logo-01.png" 
         align="center" alt="Vedam EduPoint" />
     <h1 align="center">Vedam EduPoint</h1>

@@ -2,7 +2,6 @@
     <img width="200px"
         src="https://github.com/nixrajput/nixlab-inc/blob/master/vedam-edupoint-logo-01.png" 
         align="center" alt="Vedam EduPoint" />
-    <h1 align="center">Vedam EduPoint</h1>
     <p align="center">An Edu-tech web app developed using django framework!</p></p>
 
 <br />

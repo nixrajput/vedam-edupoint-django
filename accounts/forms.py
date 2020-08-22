@@ -13,8 +13,18 @@ class SignupForm(UserCreationForm):
 
         if CustomUser.objects.filter(email=email).exists():
             raise forms.ValidationError('This email address is already in use.')
-        else:
-            return email
+
+        return email
+
+    def clean_dob(self):
+        dob = self.cleaned_data.get('dob')
+
+        diff = abs(datetime.date.today() - dob)
+
+        if (diff.days / 365) < 6:
+            raise forms.ValidationError("Sorry, you are too young. Your age should be more than 6 years.")
+
+        return dob
 
 
 class ProfileImageForm(forms.ModelForm):

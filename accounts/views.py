@@ -126,14 +126,24 @@ def success_confirmation(request):
 
 
 def about_us(request):
-    current_user = request.user
+    try:
+        logged_in_user = request.user.is_authenticated()
+    except TypeError:
+        logged_in_user = request.user.is_authenticated
+
+    if logged_in_user:
+        try:
+            profile_img = [UserProfileImage.objects.filter(user_id=request.user.userId).latest('updated_at')]
+        except ObjectDoesNotExist:
+            profile_img = []
+    else:
+        profile_img = []
+        
 
     try:
         user_list = TeamMember.objects.all()
-        profile_img = [UserProfileImage.objects.filter(user_id=current_user.userId).latest('updated_at')]
     except ObjectDoesNotExist:
         user_list = []
-        profile_img = []
 
     context = {
         'user_list': user_list,
@@ -144,10 +154,17 @@ def about_us(request):
 
 
 def contact_us(request):
-    current_user = request.user
     try:
-        profile_img = [UserProfileImage.objects.filter(user_id=current_user.userId).latest('updated_at')]
-    except ObjectDoesNotExist:
+        logged_in_user = request.user.is_authenticated()
+    except TypeError:
+        logged_in_user = request.user.is_authenticated
+
+    if logged_in_user:
+        try:
+            profile_img = [UserProfileImage.objects.filter(user_id=request.user.userId).latest('updated_at')]
+        except ObjectDoesNotExist:
+            profile_img = []
+    else:
         profile_img = []
 
     if request.method == 'POST':

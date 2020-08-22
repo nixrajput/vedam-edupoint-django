@@ -55,7 +55,21 @@ class UserProgressView(TemplateView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         context['cat_scores'] = progress.list_all_cat_scores
         context['tests'] = progress.show_tests()
-        context['profileImg'] = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+
+        try:
+            self.logged_in_user = self.request.user.is_authenticated()
+        except TypeError:
+            self.logged_in_user = self.request.user.is_authenticated
+
+        if self.logged_in_user:
+            try:
+                profile_img = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+            except ObjectDoesNotExist:
+                profile_img = []
+        else:
+            profile_img = []
+
+        context['profileImg'] = profile_img
         return context
 
 

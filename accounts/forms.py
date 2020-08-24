@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, forms
 
-from accounts.models import *
+from accounts.models import CustomUser, UserProfileImage, ContactUs
+import datetime
 
 
 class SignupForm(UserCreationForm):

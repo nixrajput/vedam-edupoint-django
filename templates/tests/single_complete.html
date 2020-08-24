@@ -1,0 +1,64 @@
+{% load static %} {% load i18n %} {% load test_tags %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <title>Vedam EduPoint</title>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link href="{% static 'img/favicon.ico' %}" rel="shortcut icon" type="image/x-icon"> {% include 'widgets/styles.html' %}
+
+</head>
+
+<body>
+
+    {% include 'widgets/header.html' %}
+
+    <main>
+
+        <div class="slider-area">
+            <div class="slider-active">
+                <div class="single-slider mt-50">
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+
+                            <div class="ml-20 mr-20 text-center">
+
+                                {% if user.is_authenticated %}
+
+                                <img class="error-img" src="{% static 'img/hero/error.svg' %}">
+
+                                <br>
+
+                                <p class="msg-text">You have already appeared in this test and only one sitting is permitted.</p>
+
+                                {% else %}
+
+                                <p class="msg-text">This exam is only accessible to signed in users.</p>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </main>
+
+    {% include 'widgets/footer.html' %} {% include 'widgets/scripts.html' %}
+
+</body>
+
+</html>

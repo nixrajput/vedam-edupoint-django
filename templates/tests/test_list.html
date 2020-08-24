@@ -39,20 +39,20 @@
         </div>
     </div>
 
-    <section class="category-area section-padding30">
+    <section class="category-area mt-30">
         <div class="container-fluid">
             <div class="row">
 
                 {% for test in testpaper_list %}
 
                 <div class="col-xl-4 col-lg-6">
-                    <div class="single-category mb-30">
+                    <div class="single-category mb-30 text-center">
                         <div class="category-img">
-                            <img src="{% static 'img/courses/graduation.svg' %}" alt="test_img">
+                            <img src="{% static 'img/courses/graduation.svg' %}" alt="test-img">
                             <div class="category-caption">
-                                <span class="collection">{{test.name}}</span>
-                                <span class="collection">Course : {{test.course}}</span>
-                                <h2>{{test.subject}}</h2>
+                                <h2>{{test.name}}</h2>
+                                <h5>Course : {{test.course}}</h5>
+                                <h5>Subject : {{test.subject}}</h5>
                                 <a class="btn border-btn test-start-btn is-link"
                                    href="{% url 'online-test-page' slug=test.slug %}">
                                     view details
@@ -70,7 +70,7 @@
 
     {% else %}
     <p class="text-center mt-40">
-        There is no available tests.
+        There is no test available at this time.
     </p>
     {% endif %}
 

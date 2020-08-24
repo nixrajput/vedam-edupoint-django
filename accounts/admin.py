@@ -1,5 +1,5 @@
 from django.contrib import admin
-from accounts.models import *
+from accounts.models import UserProfileImage, CustomUser, ContactUs, TeamMember
 
 
 class ProfileImageInline(admin.TabularInline):
@@ -21,3 +21,5 @@ class CustomUsersAdmin(admin.ModelAdmin):
 
 admin.site.register(CustomUser, CustomUsersAdmin)
 admin.site.register(UserProfileImage, ProfilePictureAdmin)
+admin.site.register(ContactUs)
+admin.site.register(TeamMember)

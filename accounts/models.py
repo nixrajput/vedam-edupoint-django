@@ -159,7 +159,7 @@ class TeamMember(models.Model):
     about = models.TextField(
         null=True,
         verbose_name=_("About"),
-        help_text=_("ABout text for team member.")
+        help_text=_("About text for team member.")
     )
     designation = models.CharField(
         max_length=150,

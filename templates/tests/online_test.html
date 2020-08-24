@@ -1,0 +1,111 @@
+{% load static %} {% load i18n %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <title>Vedam EduPoint</title>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link href="{% static 'img/favicon.ico' %}" rel="shortcut icon" type="image/x-icon"> {% include 'widgets/styles.html' %}
+    <script src="{% static 'js/custom.js' %}"></script>
+
+</head>
+
+<body>
+
+    {% include 'widgets/header.html' %}
+
+    <main>
+
+        <section class="category-area mt-50">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="test-card">
+
+                            {% if testpaper %}
+
+                            <script>
+                                TestTimer('{{testpaper.max_time}}', '#display');
+                            </script>
+
+                            <h3>{{testpaper.name}}</h3>
+
+                            <h4>{{testpaper.category}} ({{testpaper.course}})</h4>
+
+                            <h5>{{testpaper.subject}}</h5>
+
+                            <hr>
+
+                            <div class="d-flex justify-content-between">
+                                <label>Full Marks : {{testpaper.max_marks}}</label>
+                                <label id="display"></label>
+                            </div>
+
+                            <div class="instruction-text">
+                                <p>
+                                    <strong>Instructions:</strong>
+                                </p>
+                                <p>{{testpaper.instructions|linebreaks}}</p>
+                            </div>
+
+                            <hr> {% endif %}
+
+                            <!--<div class="question-progress">
+                           <p>Question {{ progress.0|add:1 }} of {{ progress.1 }}</p>
+                        </div>-->
+
+                            <div id="online-test-area" class="test-area mt-40">
+
+                                {% if question %} {% if progress %}
+
+                                <div class="test-question">
+                                    <p class="question-text">{{ progress.0|add:1 }}. {{question.text}}</p>
+                                </div>
+
+                                {% endif %} {% if question.figure %}
+                                <img src="{{ question.figure.url }}" alt="question" /> {% endif %}
+
+                                <form action="" method="POST">
+                                    {% csrf_token %}
+
+                                    <input type=hidden name="question_id" value="{{ question.id }}">
+
+                                    <ul class="list-group mb-4">
+
+                                        {% for answer in form.answers %}
+                                        <li class="list-group-item">
+                                            {{ answer }}
+                                        </li>
+                                        {% endfor %}
+
+                                    </ul>
+
+                                    <input type="submit" value="Next" class="btn test-start-btn">
+
+                                </form>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            </div>
+        </section>
+
+    </main>
+
+    {% include 'widgets/footer.html' %} {% include 'widgets/scripts.html' %}
+
+</body>
+
+</html>

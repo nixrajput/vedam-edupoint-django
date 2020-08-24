@@ -18,7 +18,8 @@ from model_utils.managers import InheritanceManager
 class CategoryManager(models.Manager):
 
     def new_category(self, category):
-        new_category = self.create(category=re.sub('\s+', '-', category).lower())
+        new_category = self.create(
+            category=re.sub('\s+', '-', category).lower())
 
         new_category.save()
         return new_category
@@ -122,7 +123,7 @@ class TestPaper(models.Model):
     max_time = models.IntegerField(
         default=0,
         verbose_name=_("Max Time"),
-        help_text=_("Maximum time for test.")
+        help_text=_("Maximum time for test to submit in seconds.")
     )
     max_marks = models.IntegerField(
         default=0,
@@ -217,7 +218,8 @@ class TestPaper(models.Model):
         if self.pass_mark > 100:
             raise ValidationError('%s is above 100' % self.pass_mark)
 
-        super(TestPaper, self).save(force_insert, force_update, *args, **kwargs)
+        super(TestPaper, self).save(
+            force_insert, force_update, *args, **kwargs)
 
     class Meta:
         ordering = ['timestamp', ]
@@ -285,7 +287,7 @@ class Progress(models.Model):
 
                 try:
                     incorrect = int(possible - (correct + skipped))
-                except:
+                except ValueError:
                     incorrect = 0
 
                 output[cat.title] = [correct, skipped, possible, incorrect]
@@ -296,7 +298,8 @@ class Progress(models.Model):
         return output
 
     def update_score(self, question, correct_to_add=0, skipped_to_add=0, possible_to_add=0):
-        category_test = Category.objects.filter(title=question.category).exists()
+        category_test = Category.objects.filter(
+            title=question.category).exists()
 
         if any([item is False for item in [category_test,
                                            correct_to_add,
@@ -307,14 +310,16 @@ class Progress(models.Model):
                                            isinstance(possible_to_add, int)]]):
             return _("Error"), _("test paper does not exist or invalid score.")
 
-        to_find = re.escape(str(question.category)) + r",(?P<correct>\d+),(?P<skipped>\d+),(?P<possible>\d+),"
+        to_find = re.escape(str(question.category)) + \
+            r",(?P<correct>\d+),(?P<skipped>\d+),(?P<possible>\d+),"
 
         match = re.search(to_find, self.score, re.IGNORECASE)
 
         if match:
             updated_correct = int(match.group('correct')) + abs(correct_to_add)
             updated_skipped = int(match.group('skipped')) + abs(skipped_to_add)
-            updated_possible = int(match.group('possible')) + abs(possible_to_add)
+            updated_possible = int(match.group(
+                'possible')) + abs(possible_to_add)
 
             new_score = ",".join(
                 [
@@ -519,8 +524,8 @@ class Sitting(models.Model):
     def get_questions(self, with_answers=False):
         question_ids = self._question_ids()
         questions = sorted(
-            self.paper.question_set.filter(id__in=question_ids)
-                .select_subclasses(),
+            self.paper.question_set.filter(
+                id__in=question_ids).select_subclasses(),
             key=lambda q: question_ids.index(q.id))
 
         if with_answers:

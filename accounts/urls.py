@@ -17,9 +17,9 @@ urlpatterns = [
     path(
         'reset-password/',
         auth_views.PasswordResetView.as_view(
-            template_name='reset_password.html',
-            html_email_template_name='components/reset_password_email.html',
-            subject_template_name='components/reset_password_subject.txt',
+            template_name='accounts/reset_password.html',
+            html_email_template_name='accounts/reset_password_email.html',
+            subject_template_name='accounts/reset_password_subject.txt',
             success_url='/confirm_password_reset/',
             token_generator=user_tokenizer),
         name='reset_password'
@@ -28,7 +28,7 @@ urlpatterns = [
     path(
         'reset-password-confirmation/<str:uidb64>/<str:token>/',
         auth_views.PasswordResetConfirmView.as_view(
-            template_name='reset_password_update.html',
+            template_name='accounts/reset_password_update.html',
             post_reset_login=True,
             post_reset_login_backend='django.contrib.auth.backends.ModelBackend',
             token_generator=user_tokenizer,

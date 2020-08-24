@@ -9,9 +9,10 @@ from django.template.loader import get_template
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
-from accounts.forms import *
-from accounts.models import *
-from accounts.tokens import *
+from accounts.forms import SignupForm, ProfileImageForm, ContactForm
+from accounts.models import CustomUser, UserProfileImage, ContactUs, TeamMember
+from accounts.tokens import user_tokenizer
+from VedamEdupoint import settings
 
 
 def register_user(request):
@@ -33,21 +34,21 @@ def register_user(request):
                 url = 'https://vedam-edupoint.herokuapp.com' + reverse('confirm_email',
                                                                        kwargs={'user_id': user_id, 'token': token})
 
-            message = get_template('components/register_email.html').render({'confirm_url': url})
+            message = get_template('accounts/register_email.html').render({'confirm_url': url})
 
             mail = EmailMessage('Vedam EduPoint Email Confirmation', message, to=[user.email],
                                 from_email=settings.DEFAULT_FROM_EMAIL, )
             mail.content_subtype = 'html'
             mail.send()
 
-            return render(request, 'success.html', {
+            return render(request, 'components/success.html', {
                 'message1': f'A verification email has been sent to {user.email}.',
                 'message2': f'Please verify your account to complete registration.'
             })
 
     else:
         form = SignupForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'accounts/register.html', {'form': form})
 
 
 def login_user(request):
@@ -58,7 +59,7 @@ def login_user(request):
             try:
                 form.clean()
             except ValidationError:
-                return render(request, 'login.html', {'form': form, 'invalid_creds': True})
+                return render(request, 'accounts/login.html', {'form': form, 'invalid_creds': True})
 
             login(request, form.get_user())
 
@@ -66,7 +67,7 @@ def login_user(request):
                 return redirect(reverse('home'))
             else:
                 auth.logout(request)
-                return render(request, 'login.html', {
+                return render(request, 'accounts/login.html', {
                     'form': AuthenticationForm(),
                     'message': f'Your account is not verified. A verification email has been sent to your email.'
                                f'Please verify your account to complete registration. '
@@ -74,7 +75,7 @@ def login_user(request):
 
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'accounts/login.html', {'form': form})
 
 
 @login_required(login_url='login')
@@ -92,11 +93,11 @@ def profile(request, username):
             fs = form.save(commit=False)
             fs.user = current_user
             fs.save()
-            return redirect(reverse('profile'))
+            return redirect(reverse('accounts/profile'))
 
     else:
         form = ProfileImageForm()
-    return render(request, 'profile.html', {'profileImg': profile_img, 'form': form})
+    return render(request, 'accounts/profile.html', {'profileImg': profile_img, 'form': form})
 
 
 def confirm_registration(request, user_id, token):
@@ -118,11 +119,11 @@ def confirm_registration(request, user_id, token):
 
 
 def confirm_password_reset(request):
-    return render(request, 'reset_password_confirm.html')
+    return render(request, 'accounts/reset_password_confirm.html')
 
 
 def success_confirmation(request):
-    return render(request, 'success.html')
+    return render(request, 'components/success.html')
 
 
 def about_us(request):
@@ -178,7 +179,7 @@ def contact_us(request):
             sender = form.cleaned_data['email']
             subject = form.cleaned_data['subject']
 
-            message = get_template('components/contact_email.html').render(
+            message = get_template('accounts/contact_email.html').render(
                 {'message': message, 'sender': sender, 'name': name})
 
             mail = EmailMessage(subject=subject, body=message, from_email=settings.DEFAULT_FROM_EMAIL,
@@ -187,7 +188,7 @@ def contact_us(request):
             mail.content_subtype = 'html'
             mail.send()
 
-            return render(request, 'success.html', {
+            return render(request, 'components/success.html', {
                 'message1': f'Your message has been sent successfully.',
                 'message2': f'Thank you for your valuable message.'
             })

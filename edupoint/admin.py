@@ -1,7 +1,7 @@
 from django.contrib import admin
-from edupoint.models import *
-from accounts.models import *
-from multiplechoice.models import *
+from edupoint.models import TestPaper, Progress, Sitting, Category, Course, Subject, Question
+from accounts.models import UserProfileImage
+from multiplechoice.models import MultiChoiceQuestion, Answer
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.widgets import FilteredSelectMultiple
@@ -84,5 +84,3 @@ admin.site.register(Sitting)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Subject, SubjectAdmin)
-admin.site.register(ContactUs)
-admin.site.register(TeamMember)

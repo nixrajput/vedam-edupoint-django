@@ -4,9 +4,9 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, FormView, TemplateView
 
-from accounts.models import *
-from edupoint.forms import *
-from edupoint.models import *
+from accounts.models import UserProfileImage
+from edupoint.forms import QuestionForm
+from edupoint.models import TestPaper, Sitting, Progress
 
 
 def home(request):
@@ -18,7 +18,8 @@ def home(request):
     if logged_in_user:
         current_user = request.user
         try:
-            profile_img = [UserProfileImage.objects.filter(user_id=current_user.userId).latest('updated_at')]
+            profile_img = [UserProfileImage.objects.filter(
+                user_id=current_user.userId).latest('updated_at')]
         except ObjectDoesNotExist:
             profile_img = []
     else:
@@ -44,7 +45,7 @@ class SittingFilterTitleMixin(object):
 
 
 class UserProgressView(TemplateView):
-    template_name = 'progress.html'
+    template_name = 'tests/progress.html'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -63,7 +64,8 @@ class UserProgressView(TemplateView):
 
         if self.logged_in_user:
             try:
-                profile_img = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+                profile_img = [UserProfileImage.objects.filter(
+                    user_id=self.request.user.userId).latest('updated_at')]
             except ObjectDoesNotExist:
                 profile_img = []
         else:
@@ -75,10 +77,11 @@ class UserProgressView(TemplateView):
 
 class TestMarkingList(TestMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
-    template_name = 'sitting_list.html'
+    template_name = 'tests/sitting_list.html'
 
     def get_queryset(self):
-        queryset = super(TestMarkingList, self).get_queryset().filter(complete=True)
+        queryset = super(TestMarkingList, self).get_queryset().filter(
+            complete=True)
 
         user_filter = self.request.GET.get('user_filter')
         if user_filter:
@@ -89,17 +92,18 @@ class TestMarkingList(TestMarkerMixin, SittingFilterTitleMixin, ListView):
 
 class TestMarkingDetail(TestMarkerMixin, DetailView):
     model = Sitting
-    template_name = 'sitting_detail.html'
+    template_name = 'tests/sitting_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super(TestMarkingDetail, self).get_context_data(**kwargs)
-        context['questions'] = context['sitting'].get_questions(with_answers=True)
+        context['questions'] = context['sitting'].get_questions(
+            with_answers=True)
         return context
 
 
 class TestListView(ListView):
     model = TestPaper
-    template_name = 'test_list.html'
+    template_name = 'tests/test_list.html'
 
     def get_context_data(self, **kwargs):
         context = super(TestListView, self).get_context_data(**kwargs)
@@ -111,7 +115,8 @@ class TestListView(ListView):
 
         if self.logged_in_user:
             try:
-                profile_img = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+                profile_img = [UserProfileImage.objects.filter(
+                    user_id=self.request.user.userId).latest('updated_at')]
             except ObjectDoesNotExist:
                 profile_img = []
         else:
@@ -129,7 +134,7 @@ class TestListView(ListView):
 class TestDetailView(DetailView):
     model = TestPaper
     slug_field = 'slug'
-    template_name = 'test_detail.html'
+    template_name = 'tests/test_detail.html'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -150,7 +155,8 @@ class TestDetailView(DetailView):
 
         if self.logged_in_user:
             try:
-                profile_img = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+                profile_img = [UserProfileImage.objects.filter(
+                    user_id=self.request.user.userId).latest('updated_at')]
             except ObjectDoesNotExist:
                 profile_img = []
         else:
@@ -163,9 +169,9 @@ class TestDetailView(DetailView):
 
 class TestTakeView(FormView):
     form_class = QuestionForm
-    template_name = 'online_test.html'
-    result_template_name = 'result.html'
-    single_complete_template_name = 'single_complete.html'
+    template_name = 'tests/online_test.html'
+    result_template_name = 'tests/result.html'
+    single_complete_template_name = 'tests/single_complete.html'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -179,12 +185,12 @@ class TestTakeView(FormView):
             self.logged_in_user = self.request.user.is_authenticated
 
         if self.logged_in_user:
-            self.sitting = Sitting.objects.user_sitting(request.user, self.testpaper)
+            self.sitting = Sitting.objects.user_sitting(
+                request.user, self.testpaper)
 
         if self.sitting is False:
             context = {
                 'profileImg': [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
-
             }
             return render(request, self.single_complete_template_name, context)
 
@@ -217,7 +223,8 @@ class TestTakeView(FormView):
         context = super(TestTakeView, self).get_context_data(**kwargs)
         context['question'] = self.question
         context['testpaper'] = self.testpaper
-        context['profileImg'] = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+        context['profileImg'] = [UserProfileImage.objects.filter(
+            user_id=self.request.user.userId).latest('updated_at')]
         if hasattr(self, 'previous'):
             context['previous'] = self.previous
         if hasattr(self, 'progress'):
@@ -269,10 +276,12 @@ class TestTakeView(FormView):
         self.sitting.mark_testpaper_complete()
 
         if self.testpaper.answers_at_end:
-            results['questions'] = self.sitting.get_questions(with_answers=True)
+            results['questions'] = self.sitting.get_questions(
+                with_answers=True)
             results['incorrect_questions'] = self.sitting.get_incorrect_questions
             results['skipped_questions'] = self.sitting.get_skipped_questions
-            results['profileImg'] = [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+            results['profileImg'] = [UserProfileImage.objects.filter(
+                user_id=self.request.user.userId).latest('updated_at')]
 
         if self.testpaper.save_record is False:
             self.sitting.delete()

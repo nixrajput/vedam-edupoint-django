@@ -9,12 +9,11 @@ load_dotenv(verbose=True, dotenv_path=os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = 'qq6ejd1=0btt5btvd5a9$t1$nshs-6u5mp*8ik68f7q-fe5=!y'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'vedam-edupoint.herokuapp.com']
 
 INSTALLED_APPS = [
-    ''
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

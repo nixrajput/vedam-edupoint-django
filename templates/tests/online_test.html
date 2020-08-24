@@ -10,7 +10,6 @@
     <title>Vedam EduPoint</title>
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <link href="{% static 'img/favicon.ico' %}" rel="shortcut icon" type="image/x-icon"> {% include 'widgets/styles.html' %}
-    <script src="{% static 'js/custom.js' %}"></script>
 
 </head>
 
@@ -43,7 +42,8 @@
 
                             <div class="d-flex justify-content-between">
                                 <label>Full Marks : {{testpaper.max_marks}}</label>
-                                <label id="display"></label>
+                                <label>Time : {{testpaper.max_time}} min</label>
+                                
                             </div>
 
                             <div class="instruction-text">

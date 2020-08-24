@@ -13,8 +13,8 @@ ANSWER_ORDER_OPTIONS = (
 class MultiChoiceQuestion(Question):
     answer_order = models.CharField(
         max_length=30, null=True, blank=True,
-        default=ANSWER_ORDER_OPTIONS[1] ,
         choices=ANSWER_ORDER_OPTIONS,
+        default=ANSWER_ORDER_OPTIONS[1],
         help_text=_("The order in which multiple choice "
                     "answer options are displayed "
                     "to the user"),

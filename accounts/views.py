@@ -100,7 +100,7 @@ def profile(request, username):
             fs = form.save(commit=False)
             fs.user = current_user
             fs.save()
-            return redirect(reverse('accounts/profile'))
+            return redirect(reverse('profile'))
 
     else:
         form = ProfileImageForm()

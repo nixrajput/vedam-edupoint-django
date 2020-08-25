@@ -69,14 +69,16 @@
                                     </div>
 
                                     <div class="upload-field">
-                                        <input type="submit" value="UPLOAD">
+                                        <input class="send-btn" type="submit" value="UPLOAD">
                                     </div>
 
                                 </form>
 
                             </div>
 
-                            <div class="form-field">
+                            <div class="profile-details">
+
+                                <div class="form-field">
                                 <label>Full Name</label>
                                 <div class="field-value">
                                     <p> {{user.first_name}} </p>
@@ -101,15 +103,17 @@
                              <div class="form-field">
                                 <label>Reset Password</label>
                                 <div class="field-value">
-                                    <p><a class="forgot-text" href="{% url 'reset_password' %}">Reset Password</a></p>
+                                    <a class="forgot-text" href="{% url 'reset_password' %}">Reset Password</a>
                                 </div>
                             </div>
 
                             <div class="form-field">
                                 <label>Your Progress</label>
                                 <div class="field-value">
-                                    <p><a class="forgot-text" href="{% url 'test-progress' %}">Your Progress</a></p>
+                                    <a class="forgot-text" href="{% url 'test-progress' %}">Your Progress</a>
                                 </div>
+                            </div>
+
                             </div>
 
                         </div>

@@ -560,9 +560,10 @@ class Sitting(models.Model):
             return 100
 
         correct = float(((dividend / divisor) * 100))
+        percent = round(correct, 2)
 
         if correct >= 1:
-            return correct
+            return percent
         else:
             return 0
 

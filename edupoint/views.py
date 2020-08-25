@@ -188,9 +188,17 @@ class TestTakeView(FormView):
             self.sitting = Sitting.objects.user_sitting(
                 request.user, self.testpaper)
 
+            try:
+                profile_img = [UserProfileImage.objects.filter(
+                    user_id=self.request.user.userId).latest('updated_at')]
+            except ObjectDoesNotExist:
+                profile_img = []
+
+            self.profile_img = profile_img
+
         if self.sitting is False:
             context = {
-                'profileImg': [UserProfileImage.objects.filter(user_id=self.request.user.userId).latest('updated_at')]
+                'profileImg': self.profile_img
             }
             return render(request, self.single_complete_template_name, context)
 
@@ -223,8 +231,7 @@ class TestTakeView(FormView):
         context = super(TestTakeView, self).get_context_data(**kwargs)
         context['question'] = self.question
         context['testpaper'] = self.testpaper
-        context['profileImg'] = [UserProfileImage.objects.filter(
-            user_id=self.request.user.userId).latest('updated_at')]
+        context['profileImg'] = self.profile_img
         if hasattr(self, 'previous'):
             context['previous'] = self.previous
         if hasattr(self, 'progress'):
@@ -280,8 +287,7 @@ class TestTakeView(FormView):
                 with_answers=True)
             results['incorrect_questions'] = self.sitting.get_incorrect_questions
             results['skipped_questions'] = self.sitting.get_skipped_questions
-            results['profileImg'] = [UserProfileImage.objects.filter(
-                user_id=self.request.user.userId).latest('updated_at')]
+            results['profileImg'] = self.profile_img
 
         if self.testpaper.save_record is False:
             self.sitting.delete()

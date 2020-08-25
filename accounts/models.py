@@ -23,7 +23,7 @@ class CustomUser(AbstractUser):
     )
     is_valid = models.BooleanField(
         default=False,
-        verbose_name='Verified',
+        verbose_name=_("Verified"),
         help_text=_("User is verified or not.")
     )
 

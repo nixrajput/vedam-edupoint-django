@@ -10,7 +10,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from accounts.forms import SignupForm, ProfileImageForm, ContactForm
-from accounts.models import CustomUser, UserProfileImage, ContactUs, TeamMember
+from accounts.models import CustomUser, UserProfileImage, TeamMember
 from accounts.tokens import user_tokenizer
 from VedamEdupoint import settings
 
@@ -63,15 +63,22 @@ def login_user(request):
 
             login(request, form.get_user())
 
-            if request.user.is_valid:
-                return redirect(reverse('home'))
-            else:
+            if not request.user.is_valid:
                 auth.logout(request)
                 return render(request, 'accounts/login.html', {
                     'form': AuthenticationForm(),
-                    'message': f'Your account is not verified. A verification email has been sent to your email.'
-                               f'Please verify your account to complete registration. '
+                    'message': f'Your account is not verified. Please verify your account to login.'
                 })
+
+            elif not request.user.is_active:
+                auth.logout(request)
+                return render(request, 'accounts/login.html', {
+                    'form': AuthenticationForm(),
+                    'message': f'Your account is deactivated. Please contact us for any query.'
+                })
+
+            else:
+                return redirect(reverse('home'))
 
     else:
         form = AuthenticationForm()
@@ -115,7 +122,7 @@ def confirm_registration(request, user_id, token):
         user.save()
         context['message'] = 'Verification complete. Please login to your account.'
 
-    return render(request, 'login.html', context)
+    return render(request, 'accounts/login.html', context)
 
 
 def confirm_password_reset(request):

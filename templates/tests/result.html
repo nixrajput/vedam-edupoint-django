@@ -34,16 +34,21 @@
                         {{ previous.previous_outcome|yesno:"correct,incorrect" }}
                     </strong>
                     </p>
+
                     {% include 'tests/correct_answer.html' %}
+
                     <p><strong>Explanation:</strong></p>
                     <div class="well " style="background-color: #fcf8e3;">
                         <p>{{ previous.previous_question.explanation }}</p>
                     </div>
-                    <hr> {% endif %} {% if max_score %}
+                    <hr>
 
+                    {% endif %}
+
+                    {% if max_score %}
 
                     <div>
-                        <h2><strong>Exam Results</strong></h2>
+                        <h2><strong>Test Results</strong></h2>
 
                         <br>
 
@@ -68,21 +73,37 @@
 
                     <hr>
 
-                    <br> {% endif %} {% if possible %}
+                    <br>
+
+                    {% endif %}
+
+                    {% if possible %}
 
                     <p class="lead">
                         Your session score is {{ session }} out of a possible {{ possible }}
                     </p>
 
-                    <hr> {% endif %} {% if questions %} {% for question in questions %}
+                    <hr>
+
+                    {% endif %}
+
+                    {% if questions %}
+
+                    {% for question in questions %}
 
                     <p class="lead">
                         Q. {{ question.text }}
                     </p>
 
-                    {% correct_answer_for_all question %} {% if question.user_answer %}
+                    {% correct_answer_for_all question %}
+
+                    {% if question.user_answer %}
+
                     <p>Your answer: {{ question|answer_choice_to_string:question.user_answer }}</p>
-                    {% endif %} {% if question.explanation %}
+
+                    {% endif %}
+
+                    {% if question.explanation %}
 
                     <strong>Explanation:</strong>
                     <div class="well " style="background-color: #fcf8e3;">
@@ -95,7 +116,11 @@
 
                     <hr>
 
-                    <br> {% endfor %} {% endif %}
+                    <br>
+
+                    {% endfor %}
+
+                    {% endif %}
 
                 </div>
 

@@ -10,6 +10,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from model_utils.managers import InheritanceManager
@@ -137,7 +138,7 @@ class TestPaper(models.Model):
     )
     slug = models.SlugField(
         blank=True,
-        editable=False,
+        unique=True,
         verbose_name=_("URL"),
         help_text=_("A user friendly url for test.")
     )
@@ -222,7 +223,7 @@ class TestPaper(models.Model):
             force_insert, force_update, *args, **kwargs)
 
     class Meta:
-        ordering = ['timestamp', ]
+        ordering = ['-timestamp', ]
         verbose_name = _("Test Paper")
         verbose_name_plural = _("Test Papers")
 
@@ -232,6 +233,12 @@ class TestPaper(models.Model):
     def get_questions(self):
         return self.question_set.all().select_subclasses()
 
+    def get_absolute_url(self):
+        return reverse("online-test-detail", kwargs={"slug": self.slug})
+
+    def get_test_portal_url(self):
+        return reverse("online-test-portal", kwargs={"slug": self.slug})
+
     @property
     def get_max_score(self):
         return self.get_questions().count()
@@ -239,7 +246,8 @@ class TestPaper(models.Model):
 
 @receiver(pre_save, sender=TestPaper)
 def slugify_name(sender, instance, *args, **kwargs):
-    instance.slug = slugify(instance.name)
+    unique_slug_gen = str(instance.course.title + "-" + instance.subject.title + "-" + str(instance.pk))
+    instance.slug = slugify(instance.name + "-" + unique_slug_gen)
 
 
 class ProgressManager(models.Manager):
@@ -507,13 +515,6 @@ class Sitting(models.Model):
 
     def _incorrect_question_ids(self):
         return [int(n) for n in self.incorrect_questions.split(',') if n]
-
-    def remove_incorrect_question(self, question):
-        current = self.get_incorrect_questions
-        current.remove(question.id)
-        self.incorrect_questions = ','.join(map(str, current))
-        self.add_to_score(1)
-        self.save()
 
     def add_user_answer(self, question, guess):
         current = json.loads(self.user_answers)

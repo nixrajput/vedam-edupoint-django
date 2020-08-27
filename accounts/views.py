@@ -70,15 +70,14 @@ def login_user(request):
                     'message': f'Your account is not verified. Please verify your account to login.'
                 })
 
-            elif not request.user.is_active:
+            if request.user.is_active is False:
                 auth.logout(request)
                 return render(request, 'accounts/login.html', {
                     'form': AuthenticationForm(),
                     'message': f'Your account is deactivated. Please contact us for any query.'
                 })
 
-            else:
-                return redirect(reverse('home'))
+            return redirect(reverse('home'))
 
     else:
         form = AuthenticationForm()
@@ -100,7 +99,7 @@ def profile(request, username):
             fs = form.save(commit=False)
             fs.user = current_user
             fs.save()
-            return redirect(reverse('profile'))
+            return redirect('home')
 
     else:
         form = ProfileImageForm()

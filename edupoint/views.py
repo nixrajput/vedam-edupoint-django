@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.shortcuts import render, get_object_or_404
@@ -7,6 +9,8 @@ from django.views.generic import ListView, DetailView, FormView, TemplateView
 from accounts.models import UserProfileImage
 from edupoint.forms import QuestionForm
 from edupoint.models import TestPaper, Sitting, Progress
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 def home(request):
@@ -209,9 +213,9 @@ class TestTakeView(FormView):
             self.question = self.sitting.get_first_question()
             self.progress = self.sitting.progress()
 
-        form_class = self.form_class
+        form_ = self.form_class
 
-        return form_class(**self.get_form_kwargs())
+        return form_(**self.get_form_kwargs())
 
     def get_form_kwargs(self):
         kwargs = super(TestTakeView, self).get_form_kwargs()
@@ -231,6 +235,7 @@ class TestTakeView(FormView):
         context = super(TestTakeView, self).get_context_data(**kwargs)
         context['question'] = self.question
         context['testpaper'] = self.testpaper
+        context['sitting'] = self.sitting
         context['profileImg'] = self.profile_img
         if hasattr(self, 'previous'):
             context['previous'] = self.previous

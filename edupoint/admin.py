@@ -1,10 +1,10 @@
-from django.contrib import admin
-from edupoint.models import TestPaper, Progress, Sitting, Category, Course, Subject, Question
-from accounts.models import UserProfileImage
-from multiplechoice.models import MultiChoiceQuestion, Answer
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.contrib import admin
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.utils.translation import ugettext_lazy as _
+
+from edupoint.models import TestPaper, Progress, Sitting, Category, Course, Subject, Question
+from multiplechoice.models import MultiChoiceQuestion, Answer
 
 
 class AnswerInline(admin.TabularInline):

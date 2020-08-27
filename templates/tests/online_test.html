@@ -76,7 +76,7 @@
 
                             {% endif %}
 
-                            <form action="" method="POST">
+                            <form id="question-form" data-instance="{{ sitting }}" data-href="{{ testpaper.get_test_portal_url }}" action="" method="POST">
                                 {% csrf_token %}
 
                                 <input type=hidden name="question_id" value="{{ question.id }}">
@@ -91,7 +91,7 @@
 
                                 </ul>
 
-                                <input type="submit" value="Next" class="btn test-start-btn">
+                                <input id="submit-btn" type="submit" value="Next" class="btn test-start-btn">
 
                             </form>
 

@@ -15,6 +15,7 @@ class ProfilePictureAdmin(admin.ModelAdmin):
 
 class CustomUsersAdmin(admin.ModelAdmin):
     list_filter = ('is_superuser', 'is_staff', 'is_valid',)
+    search_fields = ('first_name', 'username')
 
     inlines = [ProfileImageInline, ]
 

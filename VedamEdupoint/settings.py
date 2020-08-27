@@ -9,7 +9,7 @@ load_dotenv(verbose=True, dotenv_path=os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = 'qq6ejd1=0btt5btvd5a9$t1$nshs-6u5mp*8ik68f7q-fe5=!y'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'vedam-edupoint.herokuapp.com']
 
@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'multiplechoice',
     'widget_tweaks',
     'storages',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -142,7 +143,6 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 LOGIN_URL = '/accounts/login/'
 LOGIN_ERROR_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'

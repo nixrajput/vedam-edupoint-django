@@ -1,14 +1,21 @@
-from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from . import views
+from edupoint.views import (
+    home,
+    TestListView,
+    TestDetailView,
+    TestTakeView,
+    UserProgressView,
+    TestMarkingList,
+    TestMarkingDetail,
+)
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('online-test/', views.TestListView.as_view(), name='online-test'),
-    path('online-test/<str:slug>/', views.TestDetailView.as_view(), name='online-test-page'),
-    path('online-test/<str:slug>/take/', views.TestTakeView.as_view(), name='online-test-take'),
-    path('progress/', views.UserProgressView.as_view(), name='test-progress'),
-    path('marking/', views.TestMarkingList.as_view(), name='test-marking'),
-    path('marking/<pk>', views.TestMarkingDetail.as_view(), name='test-marking-detail'),
+    path('', home, name='home'),
+    path('online-test/', TestListView.as_view(), name='online-test-list'),
+    path('online-test/<slug>/', TestDetailView.as_view(), name='online-test-detail'),
+    path('online-test/<slug>/portal/', TestTakeView.as_view(), name='online-test-portal'),
+    path('progress/', UserProgressView.as_view(), name='test-progress'),
+    path('marking/', TestMarkingList.as_view(), name='test-marking'),
+    path('marking/<pk>/', TestMarkingDetail.as_view(), name='test-marking-detail'),
 ]

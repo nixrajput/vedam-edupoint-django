@@ -19,6 +19,36 @@
 {% include 'widgets/header.html' %}
 
 <main>
+
+    {% if form.errors %}
+    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        The username or password is incorrect. Please check and try again.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    {% if message %}
+    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+
     <div class="slider-area">
         <div class="slider-active">
             <div class="single-slider slider-height3">
@@ -62,14 +92,6 @@
                                         </div>
                                         <p class="help is-danger">{{ form.password.errors }}</p>
                                     </div>
-
-                                    {% if form.errors %}
-                                    <p class="help is-danger">The username or password is incorrect. Please check and try again.</p>
-                                    {% endif %}
-
-                                    {% if message %}
-                                    <p class="help is-danger">{{message}}</p>
-                                    {% endif %}
 
                                     <a class="forgot-text" href="{% url 'reset_password' %}">Forgot Password?</a>
 

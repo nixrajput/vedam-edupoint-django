@@ -21,6 +21,26 @@
 
 <main>
 
+    {% if message %}
+    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+
     <div class="slider-area ">
         <div class="single-slider slider-height2 d-flex align-items-center">
             <div class="container">
@@ -61,7 +81,7 @@
 
                                 {% endfor %}
 
-                                <form method="post" enctype="multipart/form-data" action="{% url 'profile' username=user.username %}">
+                                <form method="post" enctype="multipart/form-data" action="{% url 'profile' %}">
                                     {% csrf_token %}
 
                                     <div class="upload-field">

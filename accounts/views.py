@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect, reverse
 from django.template.loader import get_template
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib import messages
 
 from accounts.forms import SignupForm, ProfileImageForm, ContactForm
 from accounts.models import CustomUser, UserProfileImage, TeamMember
@@ -40,11 +41,9 @@ def register_user(request):
                                 from_email=settings.DEFAULT_FROM_EMAIL, )
             mail.content_subtype = 'html'
             mail.send()
-
-            return render(request, 'components/success.html', {
-                'message1': f'A verification email has been sent to {user.email}.',
-                'message2': f'Please verify your account to complete registration.'
-            })
+            messages.add_message(request, messages.SUCCESS, f"A verification email has been sent to {user.email}. "
+                                                            f"Please verify your account to complete registration.")
+            return redirect('register')
 
     else:
         form = SignupForm()
@@ -59,23 +58,21 @@ def login_user(request):
             try:
                 form.clean()
             except ValidationError:
-                return render(request, 'accounts/login.html', {'form': form, 'invalid_creds': True})
+                return render(request, 'accounts/login.html', {'form': AuthenticationForm(), 'invalid_creds': True})
 
             login(request, form.get_user())
 
             if not request.user.is_valid:
                 auth.logout(request)
-                return render(request, 'accounts/login.html', {
-                    'form': AuthenticationForm(),
-                    'message': f'Your account is not verified. Please verify your account to login.'
-                })
+                messages.add_message(request, messages.WARNING, "Your account is not verified. Please "
+                                                                "verify your account to login.")
+                return redirect('login')
 
             if request.user.is_active is False:
                 auth.logout(request)
-                return render(request, 'accounts/login.html', {
-                    'form': AuthenticationForm(),
-                    'message': f'Your account is deactivated. Please contact us for any query.'
-                })
+                messages.add_message(request, messages.WARNING, "Your account is deactivated. "
+                                                                "Please contact us for any query.")
+                return redirect('login')
 
             return redirect(reverse('home'))
 
@@ -85,21 +82,29 @@ def login_user(request):
 
 
 @login_required(login_url='login')
-def profile(request, username):
-    current_user = request.user
+def profile(request):
     try:
-        profile_img = [UserProfileImage.objects.filter(user_id=current_user.userId).latest('updated_at')]
-    except ObjectDoesNotExist:
-        profile_img = []
+        logged_in_user = request.user.is_authenticated()
+    except TypeError:
+        logged_in_user = request.user.is_authenticated
+
+    profile_img = []
+    if logged_in_user:
+        try:
+            profile_img = [UserProfileImage.objects.filter(user_id=request.user.userId).latest('updated_at')]
+        except ObjectDoesNotExist:
+            profile_img = []
 
     if request.method == 'POST':
         form = ProfileImageForm(request.POST, request.FILES)
 
         if form.is_valid():
             fs = form.save(commit=False)
-            fs.user = current_user
+            fs.user = request.user
             fs.save()
-            return redirect('home')
+
+            messages.add_message(request, messages.SUCCESS, "Profile picture updated.")
+            return redirect(reverse('profile'))
 
     else:
         form = ProfileImageForm()
@@ -138,22 +143,20 @@ def about_us(request):
     except TypeError:
         logged_in_user = request.user.is_authenticated
 
+    profile_img = []
     if logged_in_user:
         try:
             profile_img = [UserProfileImage.objects.filter(user_id=request.user.userId).latest('updated_at')]
         except ObjectDoesNotExist:
             profile_img = []
-    else:
-        profile_img = []
-        
 
     try:
-        user_list = TeamMember.objects.all()
+        team_members = TeamMember.objects.all()
     except ObjectDoesNotExist:
-        user_list = []
+        team_members = []
 
     context = {
-        'user_list': user_list,
+        'user_list': team_members,
         'profileImg': profile_img,
     }
 
@@ -166,13 +169,12 @@ def contact_us(request):
     except TypeError:
         logged_in_user = request.user.is_authenticated
 
+    profile_img = []
     if logged_in_user:
         try:
             profile_img = [UserProfileImage.objects.filter(user_id=request.user.userId).latest('updated_at')]
         except ObjectDoesNotExist:
             profile_img = []
-    else:
-        profile_img = []
 
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -194,9 +196,10 @@ def contact_us(request):
             mail.content_subtype = 'html'
             mail.send()
 
-            return render(request, 'components/success.html', {
-                'message1': f'Your message has been sent successfully.',
-                'message2': f'Thank you for your valuable message.'
+            form = ContactForm()
+            return render(request, 'contact.html', {
+                'profileImg': profile_img, 'form': form,
+                'message': f'Your message has been sent successfully.',
             })
 
     else:

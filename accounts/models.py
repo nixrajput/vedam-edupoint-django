@@ -40,7 +40,7 @@ def image_path(instance, filename):
     d = today.strftime('%d')
 
     rand_str = uuid.uuid4()
-    return 'profile_img/{year}/{month}/{date}/{user_id}/{random_string}{ext}' \
+    return 'profile_img/{year}{month}{date}/{user_id}/{random_string}{ext}' \
         .format(year=y, month=m, date=d, user_id=instance.user.userId, random_string=rand_str, ext=file_extension)
 
 
@@ -108,7 +108,7 @@ def admin_image_path(instance, filename):
     d = today.strftime('%d')
 
     rand_str = uuid.uuid4()
-    return 'admin_img/{year}/{month}/{date}/{user_id}/{random_string}{ext}' \
+    return 'admin_img/{year}{month}{date}/{user_id}/{random_string}{ext}' \
         .format(year=y, month=m, date=d, user_id=instance.userId, random_string=rand_str, ext=file_extension)
 
 

@@ -10,7 +10,7 @@
 
 {% elif user_was_skipped %}
 <div class="alert alert-error">
-    <strong style="color: #000;">You skipped this question.</strong>
+    <strong style="color: #6c757d;">You skipped this question.</strong>
 </div>
 
 {% else %}
@@ -26,11 +26,11 @@
     {% for answer in previous.answers %}
     {% if answer.correct %}
     <tr class="success">
-        <td>{{ answer.content }}</td>
+        <td>{{ answer.content|safe }}</td>
         <td><strong>This is the correct answer.</strong></td>
         {% else %}
     <tr>
-        <td>{{ answer.content }}</td>
+        <td>{{ answer.content|safe }}</td>
         <td>
             {% if previous.question_type.MultiChoiceQuestion %}
             {% if answer.id|add:"0" == previous.previous_answer|add:"0" %}

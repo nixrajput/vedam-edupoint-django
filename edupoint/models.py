@@ -1,5 +1,7 @@
 import json
+import os
 import re
+import uuid
 
 from django.conf import settings
 from django.core.exceptions import ValidationError, ImproperlyConfigured
@@ -239,6 +241,9 @@ class TestPaper(models.Model):
     def get_test_portal_url(self):
         return reverse("online-test-portal", kwargs={"slug": self.slug})
 
+    def get_api_portal_url(self):
+        return reverse("test-portal", kwargs={"slug": self.slug})
+
     @property
     def get_max_score(self):
         return self.get_questions().count()
@@ -319,7 +324,7 @@ class Progress(models.Model):
             return _("Error"), _("test paper does not exist or invalid score.")
 
         to_find = re.escape(str(question.category)) + \
-            r",(?P<correct>\d+),(?P<skipped>\d+),(?P<possible>\d+),"
+                  r",(?P<correct>\d+),(?P<skipped>\d+),(?P<possible>\d+),"
 
         match = re.search(to_find, self.score, re.IGNORECASE)
 
@@ -561,10 +566,9 @@ class Sitting(models.Model):
             return 100
 
         correct = float(((dividend / divisor) * 100))
-        percent = round(correct, 2)
 
         if correct >= 1:
-            return percent
+            return correct
         else:
             return 0
 
@@ -602,6 +606,22 @@ class Sitting(models.Model):
         }
 
 
+def question_image_path(instance, filename):
+    base_filename, file_extension = os.path.splitext(filename)
+
+    rand_str = uuid.uuid4()
+    return 'question_img/{random_string}{ext}' \
+        .format(random_string=rand_str, ext=file_extension)
+
+
+def explanation_image_path(instance, filename):
+    base_filename, file_extension = os.path.splitext(filename)
+
+    rand_str = uuid.uuid4()
+    return 'explanation_img/{random_string}{ext}' \
+        .format(random_string=rand_str, ext=file_extension)
+
+
 class Question(models.Model):
     paper = models.ManyToManyField(
         TestPaper,
@@ -637,10 +657,10 @@ class Question(models.Model):
         help_text=_("Enter question text.")
     )
     figure = models.ImageField(
-        upload_to='questions',
+        upload_to=question_image_path,
         blank=True,
         null=True,
-        verbose_name=_("Figure"),
+        verbose_name=_("Question Figure"),
         help_text=_("Figure for question if any.")
     )
     explanation = models.TextField(
@@ -650,6 +670,13 @@ class Question(models.Model):
         help_text=_("Explanation to be shown "
                     "after the question has "
                     "been answered.")
+    )
+    explanation_figure = models.ImageField(
+        upload_to=explanation_image_path,
+        blank=True,
+        null=True,
+        verbose_name=_("Explanation Figure"),
+        help_text=_("Figure for explanation if any.")
     )
 
     objects = InheritanceManager()

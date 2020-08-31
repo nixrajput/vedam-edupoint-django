@@ -38,15 +38,12 @@
                         <hr>
 
                         <div class="d-flex justify-content-between">
-                            <label>Full Marks : {{testpaper.max_marks}}</label>
-                            <label>Time : {{testpaper.max_time}} min</label>
-
+                            <p><strong>Full Marks : {{testpaper.max_marks}}</strong></p>
+                            <p><strong>Time : {{testpaper.max_time}} min</strong></p>
                         </div>
 
                         <div class="instruction-text">
-                            <p>
-                                <strong>Instructions:</strong>
-                            </p>
+                            <p><strong>Instructions:</strong></p>
                             <p>{{testpaper.instructions|linebreaks}}</p>
                         </div>
 
@@ -58,15 +55,17 @@
 
                         {% if progress %}
 
-                        <div style="float:right;" class="question-progress">
-                            <p>Question {{ progress.0|add:1 }} of {{ progress.1 }}</p>
-                        </div>
+                        <div id="online-test-area" class="test-area mt-20">
 
-                        <div id="online-test-area" class="test-area mt-40">
+                            <div class="question-progress">
+                                <p class="progress-text"><strong>👉 Question {{ progress.0|add:1 }} of {{ progress.1 }}</strong></p>
+                            </div>
 
                             <div class="test-question">
-                                <p class="question-text">{{ progress.0|add:1 }}. {{ question.text }}</p>
+                                <div class="question-text">{{ question.text|safe|linebreaks }}</div>
                             </div>
+
+                            <br>
 
                             {% endif %}
 
@@ -74,22 +73,25 @@
 
                             <img src="{{ question.figure.url }}" alt="question"/>
 
+                            <br>
+                            <br>
+                            <br>
+
                             {% endif %}
 
-                            <form id="question-form" data-instance="{{ sitting }}" data-href="{{ testpaper.get_test_portal_url }}" action="" method="POST">
+                            <form id="question-form" data-instance="{{ sitting }}"
+                                  data-href="{{ testpaper.get_test_portal_url }}"
+                                  action="" method="POST">
+
                                 {% csrf_token %}
 
                                 <input type=hidden name="question_id" value="{{ question.id }}">
 
-                                <ul class="list-group mb-4">
-
                                     {% for answer in form.answers %}
-                                    <li class="list-group-item">
+                                    <p class="answer-text">
                                         {{ answer }}
-                                    </li>
+                                    </p>
                                     {% endfor %}
-
-                                </ul>
 
                                 <input id="submit-btn" type="submit" value="Next" class="btn test-start-btn">
 
@@ -110,7 +112,45 @@
 
 </main>
 
-{% include 'widgets/footer.html' %} {% include 'widgets/scripts.html' %}
+{% include 'widgets/footer.html' %}
+
+{% include 'widgets/scripts.html' %}
+
+<!--<script>-->
+
+<!--    $(document).ready(function () {-->
+<!--        const $myForm = $("#question-form");-->
+<!--        let $question = $(".question-text")-->
+
+<!--        $myForm.submit(function (event) {-->
+<!--            event.preventDefault()-->
+<!--            let $formData = $(this).serialize();-->
+<!--            const $url_ = $myForm.attr("data-href");-->
+
+<!--            $.ajax({-->
+<!--                method: "POST",-->
+<!--                url: $url_,-->
+<!--                data: $formData,-->
+<!--                success: handleFormSuccess,-->
+<!--                error: handleFormError,-->
+<!--            })-->
+
+<!--            function handleFormSuccess(data, textStatus, jgXHR) {-->
+<!--                console.log(data)-->
+<!--                //$question.text(data["question"])-->
+<!--                $myForm[0].reset()-->
+<!--            }-->
+
+<!--            function handleFormError(jgXHR, textStatus, errorThrown) {-->
+<!--                console.log(jgXHR)-->
+<!--                console.log(textStatus)-->
+<!--                console.log(errorThrown)-->
+<!--            }-->
+
+<!--        })-->
+<!--    })-->
+
+<!--</script>-->
 
 </body>
 

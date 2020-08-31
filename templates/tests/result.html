@@ -48,7 +48,7 @@
                     {% if max_score %}
 
                     <div>
-                        <h2><strong>Test Results</strong></h2>
+                        <h2><strong>Test Result</strong></h2>
 
                         <br>
 
@@ -56,8 +56,9 @@
 
                         <hr>
 
-                        <p class="lead">
-                            You scored {{ score }} marks out of {{ max_score }} marks, and giving {{ percent }}% percent correct answer.
+                        <p>
+                            You scored <strong>{{ score }}</strong> marks out of <strong>{{ max_score }}</strong> marks,
+                            and giving <strong>{{ percent|floatformat }}%</strong> percent correct answer.
                         </p>
 
                         {% if paper.pass_mark %}
@@ -91,23 +92,39 @@
 
                     {% for question in questions %}
 
-                    <p class="lead">
-                        Q. {{ question.text }}
-                    </p>
+                    <div class="question-text"><strong>Q.</strong> 👇 {{ question.text|safe|linebreaks }}</div>
+
+                    {% if question.figure %}
+
+                    <img src="{{ question.figure.url }}" alt="question"/>
+
+                    {% endif %}
 
                     {% correct_answer_for_all question %}
 
                     {% if question.user_answer %}
 
-                    <p>Your answer: {{ question|answer_choice_to_string:question.user_answer }}</p>
+                    <p><strong>Your Answer:</strong> {{ question|answer_choice_to_string:question.user_answer|safe }}</p>
 
                     {% endif %}
 
+                    <strong>Explanation:</strong>
+
                     {% if question.explanation %}
 
-                    <strong>Explanation:</strong>
-                    <div class="well " style="background-color: #fcf8e3;">
-                        <p>{{ question.explanation|safe }}</p>
+                    <div class="well" style="background-color: #fcf8e3;">
+                        <p>{{ question.explanation|safe|linebreaks }}</p>
+                    </div>
+
+                    {% endif %}
+
+                    {% if question.explanation_figure %}
+
+                    <br>
+                    <br>
+
+                    <div class="well">
+                        <img src="{{ question.explanation_figure.url }}" alt="explanation"/>
                     </div>
 
                     {% endif %}

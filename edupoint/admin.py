@@ -3,7 +3,15 @@ from django.contrib import admin
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import ugettext_lazy as _
 
-from edupoint.models import TestPaper, Progress, Sitting, Category, Course, Subject, Question
+from edupoint.models import (
+    TestPaper,
+    Progress,
+    Sitting,
+    Category,
+    Course,
+    Subject,
+    Question
+)
 from multiplechoice.models import MultiChoiceQuestion, Answer
 
 
@@ -45,7 +53,7 @@ class TestAdmin(admin.ModelAdmin):
 
     list_display = ('name', 'category', 'subject',)
     list_filter = ('category', 'subject',)
-    search_fields = ('name', 'category')
+    search_fields = ('name', 'category__title', 'course__title', 'subject__title', 'slug',)
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -65,8 +73,8 @@ class SubjectAdmin(admin.ModelAdmin):
 class MultipleChoiceQuestionAdmin(admin.ModelAdmin):
     list_display = ('text', 'category', 'subject',)
     list_filter = ('category', 'course', 'subject',)
-    fields = ('text', 'category', 'course', 'subject',
-              'paper', 'figure', 'explanation', 'answer_order')
+    fields = ('text', 'figure', 'category', 'course', 'subject',
+              'paper', 'explanation', 'explanation_figure', 'answer_order')
     search_fields = ('text', 'explanation', 'subject',)
     filter_horizontal = ('paper',)
 

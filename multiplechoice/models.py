@@ -1,7 +1,11 @@
+import os
+import uuid
+
 from django.db import models
+from django.template.defaultfilters import register
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from edupoint.models import Question
-
 
 ANSWER_ORDER_OPTIONS = (
     ('content', _('Content')),
@@ -46,8 +50,9 @@ class MultiChoiceQuestion(Question):
     def get_answers(self):
         return self.order_answers(Answer.objects.filter(question=self))
 
+    @register.filter(is_safe=True)
     def get_answers_list(self):
-        return [(answer.id, answer.content) for answer in
+        return [(answer.id, mark_safe(answer.content)) for answer in
                 self.order_answers(Answer.objects.filter(question=self))]
 
     def answer_choice_to_string(self, guess):
@@ -64,6 +69,14 @@ class MultiChoiceQuestion(Question):
         verbose_name_plural = _("Multiple Choice Questions")
 
 
+def answer_image_path(instance, filename):
+    base_filename, file_extension = os.path.splitext(filename)
+
+    rand_str = uuid.uuid4()
+    return 'answer_img/{random_string}{ext}' \
+        .format(random_string=rand_str, ext=file_extension)
+
+
 class Answer(models.Model):
     question = models.ForeignKey(
         MultiChoiceQuestion,
@@ -77,6 +90,13 @@ class Answer(models.Model):
         verbose_name=_("Content"),
         help_text=_("Enter the answer text that "
                     "you want displayed"),
+    )
+    figure = models.ImageField(
+        upload_to=answer_image_path,
+        blank=True,
+        null=True,
+        verbose_name=_("Answer Figure"),
+        help_text=_("Figure for answer if any.")
     )
 
     correct = models.BooleanField(

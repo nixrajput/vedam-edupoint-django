@@ -1,16 +1,14 @@
-import json
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, DetailView, FormView, TemplateView
 
 from accounts.models import UserProfileImage
 from edupoint.forms import QuestionForm
 from edupoint.models import TestPaper, Sitting, Progress
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from edupoint.mixins import TestMarkerMixin, SittingFilterTitleMixin
 
 
 def home(request):
@@ -30,22 +28,6 @@ def home(request):
         profile_img = []
 
     return render(request, 'home.html', {'profileImg': profile_img})
-
-
-class TestMarkerMixin(object):
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(TestMarkerMixin, self).dispatch(*args, **kwargs)
-
-
-class SittingFilterTitleMixin(object):
-    def get_queryset(self):
-        queryset = super(SittingFilterTitleMixin, self).get_queryset()
-        test_filter = self.request.GET.get('test_filter')
-        if test_filter:
-            queryset = queryset.filter(testpaper__name__icontains=test_filter)
-
-        return queryset
 
 
 class UserProgressView(TemplateView):
@@ -177,7 +159,7 @@ class TestTakeView(FormView):
     result_template_name = 'tests/result.html'
     single_complete_template_name = 'tests/single_complete.html'
 
-    @method_decorator(login_required)
+    @method_decorator(login_required, csrf_protect)
     def dispatch(self, request, *args, **kwargs):
         self.testpaper = get_object_or_404(TestPaper, slug=self.kwargs['slug'])
         if self.testpaper.roll_out is not True:
@@ -230,6 +212,27 @@ class TestTakeView(FormView):
         self.request.POST = {}
 
         return super(TestTakeView, self).get(self, self.request)
+
+    # def form_valid(self, form):
+    #     response = super(TestTakeView, self).form_valid(form)
+    #     if self.request.is_ajax():
+    #         if self.logged_in_user:
+    #             self.form_valid_user(form)
+    #             if self.sitting.get_first_question() is False:
+    #                 return self.final_result_user()
+    #
+    #         self.request.POST = {}
+    #         self.get_form()
+    #         choices = [x for x in self.question.get_answers_list()]
+    #         data = {
+    #             "question": str(self.question),
+    #             "previous": str(self.previous),
+    #             "progress": str(self.progress),
+    #             "choices": choices,
+    #         }
+    #         return JsonResponse(data)
+    #     else:
+    #         return response
 
     def get_context_data(self, **kwargs):
         context = super(TestTakeView, self).get_context_data(**kwargs)

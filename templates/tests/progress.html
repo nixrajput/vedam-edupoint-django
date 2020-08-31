@@ -90,7 +90,7 @@
                         <td>{{ test.current_score }}</td>
                         <td>{{ test.get_negative_score }}</td>
                         <td>{{ test.get_max_score }}</td>
-                        <td>{{ test.get_percent_correct }}</td>
+                        <td>{{ test.get_percent_correct|floatformat }}</td>
                     </tr>
 
                     {% endfor %}

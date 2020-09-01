@@ -13,14 +13,13 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('confirm-email/<str:user_id>/<str:token>/', views.confirm_registration, name='confirm_email'),
     path('confirm-password-reset/', views.confirm_password_reset, name='confirm-password-reset'),
-    path('success/', views.success_confirmation, name='success'),
     path(
         'reset-password/',
         auth_views.PasswordResetView.as_view(
             template_name='accounts/reset_password.html',
             html_email_template_name='accounts/reset_password_email.html',
-            subject_template_name='accounts/reset_password_subject.txt',
-            success_url='/confirm_password_reset/',
+            subject_template_name='accounts/reset_password_subject.html',
+            success_url='/accounts/confirm-password-reset/',
             token_generator=user_tokenizer),
         name='reset_password'
     ),

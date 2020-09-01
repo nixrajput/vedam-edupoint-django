@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 
 <!DOCTYPE html>
 <html class="no-js" lang="en">
@@ -32,12 +33,12 @@
 
     {% if messages %}
     {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
         {{message}}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
-        </div>
+    </div>
     {% endfor %}
     {% endif %}
 
@@ -70,7 +71,8 @@
                                 {% for currentUser in profileImg %}
 
                                 <div class="profile-img-card">
-                                    <img src="{% if currentUser.img %}{{ currentUser.img.url }}{% else %}/static/img/person.png{% endif %}" alt="profile_image">
+                                    <img src="{% if currentUser.img %}{{ currentUser.img.url }}{% else %}/static/img/person.png{% endif %}"
+                                         alt="profile_image">
                                 </div>
 
                                 {% empty %}
@@ -99,40 +101,40 @@
                             <div class="profile-details">
 
                                 <div class="form-field">
-                                <label>Full Name</label>
-                                <div class="field-value">
-                                    <p> {{user.first_name}} </p>
-                                    <p> {{user.last_name}} </p>
+                                    <label>Full Name</label>
+                                    <div class="field-value">
+                                        <p> {{user.first_name}} </p>
+                                        <p> {{user.last_name}} </p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-field">
-                                <label>Email</label>
-                                <div class="field-value">
-                                    <p> {{user.email}} </p>
+                                <div class="form-field">
+                                    <label>Email</label>
+                                    <div class="field-value">
+                                        <p> {{user.email}} </p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-field">
-                                <label>Username</label>
-                                <div class="field-value">
-                                    <p> {{user.username}} </p>
+                                <div class="form-field">
+                                    <label>Username</label>
+                                    <div class="field-value">
+                                        <p> {{user.username}} </p>
+                                    </div>
                                 </div>
-                            </div>
 
-                             <div class="form-field">
-                                <label>Reset Password</label>
-                                <div class="field-value">
-                                    <a class="forgot-text" href="{% url 'reset_password' %}">Reset Password</a>
+                                <div class="form-field">
+                                    <label>Reset Password</label>
+                                    <div class="field-value">
+                                        <a class="forgot-text" href="{% url 'reset_password' %}">Reset Password</a>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-field">
-                                <label>Your Progress</label>
-                                <div class="field-value">
-                                    <a class="forgot-text" href="{% url 'test-progress' %}">Your Progress</a>
+                                <div class="form-field">
+                                    <label>Your Progress</label>
+                                    <div class="field-value">
+                                        <a class="forgot-text" href="{% url 'test-progress' %}">Your Progress</a>
+                                    </div>
                                 </div>
-                            </div>
 
                             </div>
 
@@ -148,6 +150,48 @@
     </section>
 
 </main>
+
+<!--&lt;!&ndash; Modal &ndash;&gt;
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Reset Password</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form action="{% url 'reset_password' %}" method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+
+                        <div class="field">
+                        <div class="control">
+                            {{form2.email|add_class:"input"|attr:"placeholder:Email"|attr:"required"}}
+                        </div>
+                        <p class="help is-danger">{{ form.email.errors }}</p>
+                    </div>
+
+                    </div>
+
+                    {% if message %}
+                    <p class="help is-danger">{{message}}</p>
+                    {% endif %}
+
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Understood</button>
+            </div>
+        </div>
+    </div>
+</div>-->
 
 {% include 'widgets/footer.html' %}
 

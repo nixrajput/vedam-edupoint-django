@@ -9,6 +9,7 @@ from django.template.loader import get_template
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordResetForm
 
 from accounts.forms import SignupForm, ProfileImageForm, ContactForm
 from accounts.models import CustomUser, UserProfileImage, TeamMember
@@ -108,6 +109,7 @@ def profile(request):
 
     else:
         form = ProfileImageForm()
+
     return render(request, 'accounts/profile.html', {'profileImg': profile_img, 'form': form})
 
 
@@ -131,10 +133,6 @@ def confirm_registration(request, user_id, token):
 
 def confirm_password_reset(request):
     return render(request, 'accounts/reset_password_confirm.html')
-
-
-def success_confirmation(request):
-    return render(request, 'components/success.html')
 
 
 def about_us(request):

@@ -151,48 +151,6 @@
 
 </main>
 
-<!--&lt;!&ndash; Modal &ndash;&gt;
-<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
-     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Reset Password</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-
-                <form action="{% url 'reset_password' %}" method="post">
-                    {% csrf_token %}
-
-                    <div class="form-group">
-
-                        <div class="field">
-                        <div class="control">
-                            {{form2.email|add_class:"input"|attr:"placeholder:Email"|attr:"required"}}
-                        </div>
-                        <p class="help is-danger">{{ form.email.errors }}</p>
-                    </div>
-
-                    </div>
-
-                    {% if message %}
-                    <p class="help is-danger">{{message}}</p>
-                    {% endif %}
-
-                </form>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Understood</button>
-            </div>
-        </div>
-    </div>
-</div>-->
-
 {% include 'widgets/footer.html' %}
 
 {% include 'widgets/scripts.html' %}

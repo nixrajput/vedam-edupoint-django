@@ -2,7 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 from django.conf import settings
 
-from . import views
+import accounts.views as views
 from accounts.tokens import user_tokenizer
 
 urlpatterns = [
